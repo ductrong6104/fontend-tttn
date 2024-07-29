@@ -1,7 +1,7 @@
 // components/Input.js
 import PropTypes from 'prop-types';
 
-const InputCustome = ({ type, name, value, onChange, placeholder, className, required }) => {
+const InputCustome = ({ type, name, value, onChange, placeholder, className, required, readOnly, min }) => {
   return (
     <input
       type={type}
@@ -11,6 +11,8 @@ const InputCustome = ({ type, name, value, onChange, placeholder, className, req
       placeholder={placeholder}
       className={`border-2 p-2 rounded-md w-full ${className}`}
       required={required}
+      readOnly={readOnly}
+      min={min}
     />
   );
 };
@@ -25,11 +27,5 @@ InputCustome.propTypes = {
   required: PropTypes.bool,
 };
 
-InputCustome.defaultProps = {
-  type: 'text',
-  placeholder: '',
-  className: '',
-  required: false,
-};
 
 export default InputCustome;

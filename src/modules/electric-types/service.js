@@ -1,30 +1,27 @@
 import api from "@/utils/api"
-export const getAllEmployees = async () => {
+export const getAllElectricTypes = async () => {
     try {
-        const response = await api.get(`/employees`);
+        const response = await api.get('/electric-types');
         return response.data;
     } catch (error) {
         console.error('Call API Error:', error);
         throw error;
     }
-    
-};
+}
 
-
-export const createEmployee = async (newEmployee) => {
+export const deleteElectricType = async (id) => {
     try {
-        const response = await api.post(`/employees`, newEmployee);
-        
+        const response = await api.delete(`/electric-types/${id}`);
         return response.data;
     } catch (error) {
         console.error('Call API Error:', error);
         throw error;
     }
-    
-};
-export const getRecordableEmployees = async () => {
+}
+
+export const createElectricType = async (electricType) => {
     try {
-        const response = await api.get('/employees/recordable');
+        const response = await api.post('/electric-types', electricType);
         return response.data;
     } catch (error) {
         console.error('Call API Error:', error);

@@ -5,7 +5,9 @@
   import { useRouter } from 'next/navigation';
   import { usePathname } from 'next/navigation';
   import ButtonCustom from '../button/button';
-  const Table = ({ data, headerNames, setData, sortConfig, setSortConfig}) => {
+
+import {  formatDateForDisplay } from '@/utils/formatDate';
+  const Table = ({representName, data, headerNames, setData, sortConfig, setSortConfig, title, handleClickEdit}) => {
     if (!data || data.length === 0) return <p>No data available</p>;
 
     // Lấy danh sách các khóa của đối tượng đầu tiên làm tiêu đề bảng
@@ -13,7 +15,7 @@
     console.log(`headers: ${headers}`)
     const [currentPage, setCurrentPage] = useState(1);
 
-    const rowsPerPage = 3;
+    const rowsPerPage = 6;
     const router = useRouter();
     const pathname = usePathname()
     // Tính toán số lượng trang
@@ -30,9 +32,19 @@
       setCurrentPage(page);
     };
 
-    const handleClickEdit = (id) => {
-      // Lấy đường dẫn hiện tại
-      router.push(`${pathname}/edit/${id}`)
+    const getButtonText = () => {
+      let buttonText;
+
+      if (representName === 'register') {
+        buttonText = 'Xác nhận';
+      }  else if (representName === 'electric-recording') {
+        buttonText = 'Xuất hóa đơn';
+      }
+      else{
+        buttonText = 'Cập nhật';
+      }
+
+      return buttonText;
     }
 
     const handleSort = (key) => {
@@ -54,24 +66,14 @@
       setData(sortedRooms);
     };
     
-    // Hàm định dạng ngày tháng
-    const formatDate = (dateString) => {
-      const options = {
-          year: 'numeric',
-          month: '2-digit',
-          day: '2-digit',
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit',
-          hour12: false,
-      };
-      const date = new Date(dateString);
-      console.log(date.toLocaleDateString('en-GB', options).replace(',', ''));
-      return date.toLocaleDateString('en-GB', options).replace(',', '');
-  };
+
+    
     return (
       <div className='flex justify-center flex-col'>
-      <div className='overflow-x-auto'>
+        <div className='flex justify-center '>
+          <div className='text-blue-600 text-2xl'>{title}</div>
+        </div>
+
         <table className='bg-blue mb-2 w-full'>
           <thead>
             <tr className='bg-blue-400 text-white'>
@@ -86,7 +88,7 @@
                   </span>
                 </th>
               ))}
-              <th>Thay đổi</th>
+              <th>Thực hiện</th>
             </tr>
           </thead>
           <tbody>
@@ -98,33 +100,67 @@
                     ? 'bg-slate-200'
                     : 'bg-slate-300 text-blue-500'
                 }`}
+                
               >
                 {headers.map((header) => {
                   let cellContent;
-                  if (header === 'birthday')
-                    cellContent = format(new Date(row[header]), 'dd/MM/yyyy');
+                  let style
+                  if (header === 'birthday' || header === 'startDate' || (header === 'endDate' && row.endDate != null) || header === 'installationDate' || header === 'recordingDate')
+                    cellContent = formatDateForDisplay(new Date(row[header]), 'dd/MM/yyyy');
+                  else if (header === 'status'){
+                    if (row.status === true)
+                      cellContent = 'Đang sử dụng'
+                    if (row.status === false){
+                      cellContent = 'Ngừng sử dụng'
+                     
+                    }
+                  }
+                  
                   else cellContent = row[header];
                   return (
-                    <td key={header} className={`text-center p-4`}>
-                      {cellContent}
+                    <td key={header} className={`text-center p-4 ${header==='status' ? (row.status === true ? 'text-green-600' : 'text-red-600'): ''}`}>
+                      {cellContent} 
                     </td>
                   );
                 })}
 
                 <td className='text-center'>
-                  {row.status == null && (
                     <div className='flex justify-center'>
-                      <ButtonCustom handleClick={() => handleClickEdit(row.id)}>
-                        Chỉnh sửa
-                      </ButtonCustom>
+                      {
+                        representName === 'contract' &&(
+                          row.endDate === null ?       
+                       
+                          (
+                            <ButtonCustom className='bg-red-400 whitespace-nowrap' onClick={() => handleClickEdit(row.contractId, 0)}>
+                              Kết thúc hợp đồng
+                          </ButtonCustom>
+                          )
+                        : 
+                          
+                          (
+                            <ButtonCustom className='bg-stone-400 whitespace-nowrap' onClick={() => handleClickEdit(row.contractId, 1)}>
+                            Gia hạn hợp đồng
+                          </ButtonCustom>
+                          )
+                        )
+                       
+                        
+                      }
+                      {
+                        representName != 'contract' && (
+                          <ButtonCustom className='bg-orange-200 whitespace-nowrap' onClick={() => handleClickEdit(row)}>
+                            {getButtonText()}
+                          </ButtonCustom>
+                        )
+                      }
+                      
                     </div>
-                  )}
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
-      </div>
+
       <div className='flex justify-end'>
         <div className='pagination flex items-center'>
           <div className='mr-2'>Trang: </div>
