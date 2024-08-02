@@ -2,6 +2,7 @@
 import FrmAddEmployee from "@/components/form/frmAddEmployee";
 import SubfrmEditEmployee from "@/components/subform/subfrmEditEmployee";
 import Table from "@/components/table/table";
+import TableComponent from "@/components/table/tableComponent";
 import { getAllEmployees } from "@/modules/employees/service";
 import { useEffect, useState } from "react";
 
@@ -76,7 +77,7 @@ export default function PageManagedEmployee() {
     openModal();
   }
   return (
-    <div className="h-screen">
+    <div className="">
       <div className="flex justify-center text-blue-600">
         <div className="text-2xl mb-2">Thông tin nhân viên</div>
       </div>
@@ -86,18 +87,22 @@ export default function PageManagedEmployee() {
       <SubfrmEditEmployee
         isOpen={modalIsOpen}
         onClose={closeModal}
-        formData={formData}
+        frmData={formData}
       />
-      <Table
-        headerNames={columnNames}
-        data={employees}
-        setData={setEmployees}
-        sortConfig={sortConfig}
-        setSortConfig={setSortConfig}
-        title="Danh sách nhân viên"
-        handleClickEdit={handleClickEdit}
-        representName="employee"
-      ></Table>
+     
+      <TableComponent data={employees} columns={[
+        {id: 'id', label: 'Mã nhân viên'},
+        {id: 'firstName', label: 'Họ'},
+        {id: 'lastName', label: 'Tên'},
+        {id: 'gender', label: 'Giới tính'},
+        {id: 'birthday', label: 'Ngày sinh'},
+        {id: 'address', label: 'Địa chỉ'},
+        {id: 'phone', label: 'Số điện thoại'},
+        {id: 'email', label: 'Email'},
+        {id: 'identityCard', label: 'CCCD'},
+        {id: 'resignation', label: 'Tình trạng'},
+      ]}
+      onEdit={handleClickEdit}></TableComponent>
     </div>
   );
 }

@@ -2,11 +2,11 @@
 // components/Layout.js
 'use client'
 import React, { useEffect } from 'react';
-import SidebarAdmin from '@/components/sidebar/sidebarAdmin';
 import { Container } from '@mui/material';
 
 import { useAuth } from '@/components/context/authContext';
 import { useRouter } from 'next/navigation';
+import SidebarEmployee from '@/components/sidebar/sidebarEmployee';
 
 
 
@@ -22,7 +22,7 @@ export default function RootLayout({ children }) {
   return (
     
       <div style={{ display: 'flex' }}>
-            <SidebarAdmin />
+            <SidebarEmployee />
             <Container component="main" style={{ marginLeft: '0px', padding: '24px' }}>
             <div className={`container mx-auto`}>
                 {children}

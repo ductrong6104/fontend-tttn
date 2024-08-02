@@ -18,3 +18,31 @@ export const createElectricRecording = async (newElectricRecordingRequest) => {
         throw error;
     }
 }
+export const getAssignedElectricRecordings = async () => {
+    try {
+        const response = await api.get('/electric-recordings/assigned');
+        return response.data;
+    } catch (error) {
+        console.error('Call API Error:', error);
+        throw error;
+    }
+}
+export const getAssignedElectricRecordingsByEmployeeId = async (employeeId) => {
+    try {   
+        const response = await api.get(`/electric-recordings/assigned/${employeeId}`);
+        return response.data;           
+    } catch (error) {    
+        console.error('Call API Error:', error);
+        throw error;
+    }
+}
+
+export const updateElectricRecordingFirst = async (electricRecordingUpdateRequest) => {
+    try {
+        const response = await api.put(`/electric-recordings`,electricRecordingUpdateRequest);
+        return response.data;
+    } catch (error) {
+        console.error('Call API Error:', error);
+        throw error;
+    }
+}

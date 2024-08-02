@@ -13,17 +13,22 @@ export default function PageManagedBill(){
         })
     },[])
     return(
-        <TableComponent data={bills}
-        columns={[
-            {id: "id", label:"Mã hóa đơn"},
-            {id: "invoiceDate", label:"Ngày lập hóa đơn"},
-            {id: "paymentDueDate", label:"Ngày hạn thanh toán"},
-            {id: "totalAmount", label:"Tổng tiền"},
-            {id: "paymentDate", label:"Ngày thanh toán"},
-            {id: "paymentStatus", label:"Trạng thái"},
-            {id: "clientIdAndFullName", label:"Mã - họ tên khách hàng"},
-            {id: "employeeIdAndFullName", label:"Mã - họ tên nhân viên"},
-        ]}
-        presentName="bill"></TableComponent>
+        <>
+            <div className="flex justify-center text-blue-600">
+                <div className="text-2xl mb-2">Danh sách hóa đơn</div>
+            </div>
+            <TableComponent data={bills}
+            columns={[
+                {id: "id", label:"Mã hóa đơn"},
+                {id: "invoiceDate", label:"Ngày lập hóa đơn"},
+                {id: "paymentDueDate", label:"Ngày hạn thanh toán"},
+                {id: "totalAmount", label:"Tổng tiền"},
+                {id: "paymentDate", label:"Ngày thanh toán"},
+                {id: "paymentStatus", label:"Trạng thái"},
+                {id: "clientIdAndFullName", label:"Mã - họ tên khách hàng"},
+                {id: "employeeIdAndFullName", label:"Mã - họ tên nhân viên"},
+            ]}
+            presentName="bill"></TableComponent>
+        </>
     )
 }

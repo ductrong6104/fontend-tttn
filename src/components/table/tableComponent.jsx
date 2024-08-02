@@ -14,16 +14,36 @@ import {
   Paper,
   IconButton,
   Typography,
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
-import { Label } from "@mui/icons-material";
+
 const TableComponent = ({ data, columns, onEdit, onDelete, presentName }) => {
+  // Lấy danh sách các khóa của đối tượng đầu tiên làm tiêu đề bảng
+  // Lấy tất cả các key từ data
+  // const getAllKeys = (data) => {
+  //   const keys = new Set();
+  //   data.forEach((item) => {
+  //     Object.keys(item).forEach((key) => keys.add(key));
+  //   });
+  //   return Array.from(keys);
+  // };
+
+  // const allKeys = useMemo(() => getAllKeys(data), [data]);
+  // console.log(`allKeys: ${allKeys}`);
   const [sortDirection, setSortDirection] = useState("asc");
   const [orderBy, setOrderBy] = useState(columns[0].id);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [searchTerms, setSearchTerms] = useState(
+    columns.reduce((acc, col) => ({ ...acc, [col.id]: "" }), {})
+  );
 
   const handleRequestSort = (property) => {
     const isAscending = orderBy === property && sortDirection === "asc";
@@ -32,7 +52,6 @@ const TableComponent = ({ data, columns, onEdit, onDelete, presentName }) => {
   };
 
   const handleChangePage = (event, newPage) => {
-    console.log(`newPage: ${newPage}`);
     setPage(newPage);
   };
 
@@ -41,43 +60,101 @@ const TableComponent = ({ data, columns, onEdit, onDelete, presentName }) => {
     setPage(0);
   };
 
+  const handleSearchChange = (id) => (event) => {
+    setSearchTerms({ ...searchTerms, [id]: event.target.value });
+  };
+
+  const filteredData = useMemo(() => {
+    return data.filter((row) =>
+      columns.every(({ id }) =>
+        row[id]
+          ? row[id].toString().toLowerCase().includes(searchTerms[id].toLowerCase())
+          : true
+      )
+    );
+  }, [data, searchTerms, columns]);
+
   const sortedData = useMemo(() => {
-    return data.slice().sort((a, b) => {
+    return filteredData.slice().sort((a, b) => {
       if (a[orderBy] < b[orderBy]) return sortDirection === "asc" ? -1 : 1;
       if (a[orderBy] > b[orderBy]) return sortDirection === "asc" ? 1 : -1;
       return 0;
     });
-  }, [data, orderBy, sortDirection]);
+  }, [filteredData, orderBy, sortDirection]);
 
   const paginatedData = useMemo(() => {
     const startIndex = page * rowsPerPage;
     const endIndex = startIndex + rowsPerPage;
-    console.log(`startIndex: ${startIndex}, endIndex: ${endIndex}`);
-    console.log(
-      `sortedData.slice(startIndex, endIndex);`,
-      sortedData.slice(startIndex, endIndex)
-    );
     return sortedData.slice(startIndex, endIndex);
   }, [sortedData, page, rowsPerPage]);
 
+  const invoiceds = [
+    { value: "true", label: "Đã thông báo" },
+    { value: "false", label: "Chưa thông báo" },
+
+  ]
   return (
-    <Paper className="overflow-x-auto">
+    <>
+    <div className="flex flex-row">
+
+    {columns.map(({ id, label }) => (
+      (id === "powerMeterId" || id === "employeeIdAndFullName" ) ?
+      <div className="mr-2">
+        <Typography >Tìm theo {label}</Typography>
+        <TextField
+        variant="outlined"
+        size="small"
+        value={searchTerms[id]}
+        onChange={handleSearchChange(id)}
+        placeholder={`Nhập ${label}`}
+        style={{ marginLeft: 8 }}
+        sx={{marginTop:2}}
+        />
+      </div> : (id === "invoiced") && (
+        <div className="mr-2">
+        <Typography sx={{marginRight:2}}>Tìm theo {label}</Typography>
+        <FormControl sx={{width: 200}} margin="normal">
+        <InputLabel>Tìm theo trạng thái</InputLabel>
+        <Select
+          name={id}
+          value={searchTerms[id]}
+          onChange={handleSearchChange(id)}
+          label="Tìm theo trạng thái"
+          required
+        >
+         
+          {invoiceds.map((option) => (
+            <MenuItem key={option.value} value={option.value}>
+              {option.label}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+        </div>
+      )
+    ))}
+    </div>
+    <Paper className="overflow-x-auto mt-2">
       <TableContainer className="max-h-screen overflow-auto">
         <MuiTable>
-          <TableHead>
-            <TableRow>
+          <TableHead> 
+            <TableRow >
               {columns.map(({ id, label }) => (
-                <TableCell key={id}>
+                <TableCell key={id} className="flex flex-col" >
                   <TableSortLabel
                     active={orderBy === id}
                     direction={orderBy === id ? sortDirection : "asc"}
                     onClick={() => handleRequestSort(id)}
                   >
-                    {label}
+                
+                      {label}
                   </TableSortLabel>
                 </TableCell>
               ))}
-              <TableCell>Thực hiện</TableCell>
+              <TableCell>Thực hiện
+              
+              </TableCell>
+              
             </TableRow>
           </TableHead>
           <TableBody>
@@ -85,13 +162,18 @@ const TableComponent = ({ data, columns, onEdit, onDelete, presentName }) => {
               <TableRow key={row.id}>
                 {columns.map(({ id }) => (
                   <TableCell
-                  style={{
-                    color: id === "paymentStatus"
-                      ? row.paymentStatus === true
-                        ? "green"
-                        : "red"
-                      : "inherit"
-                  }}
+                    style={{
+                      color:
+                        id === "paymentStatus" || id === "disabled" || id === "resignation" || id === "invoiced"
+                          ? row.paymentStatus === true || row.disabled === false || row.resignation === false || row.invoiced === true
+                            ? "green"
+                            : "red"
+                          : id === "gender"
+                          ? row.gender === true
+                            ? "pink"
+                            : "blue"
+                          : "inherit",
+                    }}
                     key={id}
                   >
                     {id === "invoiceDate" ||
@@ -102,52 +184,65 @@ const TableComponent = ({ data, columns, onEdit, onDelete, presentName }) => {
                       ? row.paymentStatus === true
                         ? "Đã thanh toán"
                         : "Chưa thanh toán"
-                      : row[id]}
+                        : id === "disabled"
+                        ? row.disabled === true
+                          ? "Vô hiệu hóa"
+                          : "Hoạt động"
+                        : id === "resignation"
+                        ? row.resignation === true
+                          ? "Đã nghỉ việc"
+                          : "Làm việc bình thường"
+                        : id === "gender"
+                        ? row.gender === true
+                          ? "Nữ"
+                          : "Nam"
+                        : id === "invoiced"
+                        ? row.invoiced === true
+                          ? "Đã xuất thông báo"
+                          : "Chưa xuất thông báo"
+                        : row[id]}
                   </TableCell>
                 ))}
-
-                {presentName === "bill" ?
-                row.oldIndex != null ? (
-                  row.invoiced === false ? (
+                {presentName === "bill" ? (
+                  row.oldIndex != null ? (
+                    row.invoiced === false ? (
+                      <TableCell>
+                        <IconButton onClick={() => onEdit(row)}>
+                          <ExitToAppIcon />
+                          <Typography>Xuất thông báo</Typography>
+                        </IconButton>
+                      </TableCell>
+                    ) : (
+                      <TableCell>
+                       
+                      </TableCell>
+                    )
+                  ) : row.paymentStatus === true ? (
                     <TableCell>
                       <IconButton onClick={() => onEdit(row)}>
-                        <ExitToAppIcon />
-                        <Typography>Xuất hóa đơn</Typography>
+                        <LocalPrintshopIcon />
+                        <Typography sx={{color:"green"}}>In hóa đơn</Typography>
                       </IconButton>
                     </TableCell>
                   ) : (
+                    
                     <TableCell>
-                      <Typography className="text-green-500">
-                        Đã xuất hóa đơn
-                      </Typography>
+                      <IconButton onClick={() => onEdit(row)}>
+                        <LocalPrintshopIcon />
+                        <Typography sx={{color:"red"}}>In thông báo</Typography>
+                      </IconButton>
                     </TableCell>
                   )
-                ) : 
-                row.paymentStatus === true ? (
+                ) : (
                   <TableCell>
                     <IconButton onClick={() => onEdit(row)}>
-                    <LocalPrintshopIcon/>
-                        <Typography>In hóa đơn</Typography>
-                      </IconButton>
-        
-                  </TableCell>
-                )
-                :
-                (
-                  <TableCell/>
-                
-                )
-                :
-                (
-                  <TableCell>
-                    <IconButton onClick={() => onEdit(row.id)}>
                       <EditIcon />
                     </IconButton>
                     <IconButton
                       onClick={
                         row.levelId
                           ? () => onDelete(row.electricTypeId, row.levelId)
-                          : () => onDelete(row.id)
+                          : () => onDelete(row)
                       }
                     >
                       <DeleteIcon />
@@ -161,7 +256,7 @@ const TableComponent = ({ data, columns, onEdit, onDelete, presentName }) => {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={data.length}
+          count={filteredData.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
@@ -169,6 +264,7 @@ const TableComponent = ({ data, columns, onEdit, onDelete, presentName }) => {
         />
       </TableContainer>
     </Paper>
+    </>
   );
 };
 

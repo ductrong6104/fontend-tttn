@@ -1,14 +1,33 @@
 // components/SubformModal.js
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import InputCustome from "../input/input";
 import ButtonCustome from "../button/button";
 
 import { customStyles } from "./styleSubfrm";
+import {
+  Box,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Radio,
+  RadioGroup,
+  Select,
+} from "@mui/material";
+import { max } from "date-fns";
 
-const SubfrmEditEmployee = ({ isOpen, onClose, formData }) => {
-  
-
+const resignations = [
+  { value: true, label: "Đã nghỉ việc" },
+  { value: false, label: "Làm việc bình thường" },
+];
+const SubfrmEditEmployee = ({ isOpen, onClose, frmData }) => {
+  const [formData, setFormData] = useState(frmData);
+  useEffect(() => {
+    setFormData(frmData);
+  }, [frmData]);
   const handleSubmit = (e) => {
     e.preventDefault();
     // Xử lý logic khi submit subform
@@ -64,7 +83,7 @@ const SubfrmEditEmployee = ({ isOpen, onClose, formData }) => {
             ></InputCustome>
           </div>
         </div>
-        
+
         <div className="flex justify-between mb-2 items-center">
           <label className="w-1/2">Căn cước công dân:</label>
           <InputCustome
@@ -83,39 +102,33 @@ const SubfrmEditEmployee = ({ isOpen, onClose, formData }) => {
             onChange={handleChange}
           ></InputCustome>
         </div>
-        <div className="flex justify-between mb-2 items-center">
-          <label className="w-1/2">Giới tính:</label>
-          <div className="space-x-4">
-              <label>
-                <input
-                  type="radio"
-                  name="gender"
-                  value="false"
-                  checked={formData.gender === "false"}
-                  onChange={handleChange}
-                  required
-                />
-                Nam
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  name="gender"
-                  value="true"
-                  checked={formData.gender === "true"}
-                  onChange={handleChange}
-                  required
-                />
-                Nữ
-              </label>
-            </div>
-        </div>
+        
+        <FormControl component="fieldset" fullWidth>
+        <Box display="flex" flexDirection="row" alignItems="center" justifyContent="space-between">
+
+            <FormLabel component="legend">Giới tính:</FormLabel>
+            <RadioGroup
+              aria-label="gender"
+              name="gender"
+              value={formData.gender}
+              onChange={handleChange}
+  
+            >
+              <Box display="flex" flexDirection="row">
+
+                <FormControlLabel value="false" control={<Radio />} label="Nam" />
+                <FormControlLabel value="true" control={<Radio />} label="Nữ" />
+              </Box>
+         
+            </RadioGroup>
+            </Box>
+        </FormControl>
         <div className="flex justify-between mb-2 items-center">
           <label className="w-1/2">Ngày sinh:</label>
           <InputCustome
             type="date"
             name="birthday"
-            value={formData.identityCard}
+            value={formData.birthday}
             onChange={handleChange}
           ></InputCustome>
         </div>
@@ -137,6 +150,22 @@ const SubfrmEditEmployee = ({ isOpen, onClose, formData }) => {
             onChange={handleChange}
           ></InputCustome>
         </div>
+        <FormControl fullWidth margin="normal">
+          <InputLabel>Tình trạng:</InputLabel>
+          <Select
+            value={formData.resignation}
+            onChange={handleChange}
+            name="resignation"
+            required
+            label="Tình trạng"
+          >
+            {resignations.map((resignation) => (
+              <MenuItem key={resignation.value} value={resignation.value}>
+                {resignation.label}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
 
         {/* Thêm các trường khác của subform */}
         <div className="flex justify-end">

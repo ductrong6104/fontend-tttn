@@ -21,7 +21,7 @@ export default function FrmSigin() {
     const [showPassword, setShowPassword] = useState(false);
     const {login} = useAuth();
     const router = useRouter();
-    const [isManager, setIsManager] = useState(false);
+    const [isManager, setIsManager] = useState(true);
     const handleCheckedSavePass = () => {
       setIsCheckedSavePass(!isCheckedSavePass);
     }
@@ -58,6 +58,10 @@ export default function FrmSigin() {
         }
         else if (res.status === 705){
           notifyError("Tài khoản này không dành cho nhân viên");
+        }
+        else if (res.status == 706){
+          notifyError("Tài khoản này đã bị vô hiệu hóa! Vui lòng liên hệ quản lý");
+          console.log('a');
         }
       });
       
@@ -103,7 +107,7 @@ export default function FrmSigin() {
           </div>
           <div className="mb-2">
             <label className="">Mật khẩu:</label>
-            <div className="flex">
+            <div className="flex items-center relative">
   
               <InputCustome
                   type={showPassword ? "text" : "password"}
@@ -114,17 +118,17 @@ export default function FrmSigin() {
                   placeholder={showPassword ? "Mật khẩu" : "********"}
                   required
               ></InputCustome>
-              <FaEyeSlash className={`cursor-pointer absolute end-0 mr-8 mt-3 ${showPassword ? "invisible" : "visible"}`} onClick={() => setShowPassword(true)}></FaEyeSlash>
-              <LiaEyeSolid className={`cursor-pointer absolute end-0 mr-8 mt-3 ${showPassword ? "visible" : "invisible"}`} onClick={() => setShowPassword(false)}></LiaEyeSolid>
+              <FaEyeSlash className={`cursor-pointer absolute right-4 ${showPassword ? "invisible" : "visible"}`} onClick={() => setShowPassword(true)}></FaEyeSlash>
+              <LiaEyeSolid className={`cursor-pointer absolute right-4 ${showPassword ? "visible" : "invisible"}`} onClick={() => setShowPassword(false)}></LiaEyeSolid>
             </div>
           </div>
-          <div className="flex justify-between mb-6">
+          {/* <div className="flex justify-between mb-6">
               <label htmlFor="checkbox">
                   <input type="checkbox" checked={isCheckedSavePass} onChange={handleCheckedSavePass} />
                   Lưu mật khẩu
               </label>
               <div className="text-blue-600 cursor-pointer">Quên mật khẩu</div>
-          </div>
+          </div> */}
           <div className="flex justify-between mb-6">
               <label htmlFor="checkbox">
                   <input type="checkbox" checked={isManager} onChange={() => setIsManager(!isManager)} />
@@ -146,9 +150,10 @@ export default function FrmSigin() {
             <Divider width="10%"/>
           </div>
           <div className="flex justify-end mb-4">
-            <ButtonCustome className="bg-white border-blue-400 w-full" onClick={() => handleClickRegis()}>
+            {isManager && (<ButtonCustome className="bg-white border-blue-400 w-full" onClick={() => handleClickRegis()}>
               Đăng ký ngay
-            </ButtonCustome>
+            </ButtonCustome>)}
+            
           </div>
         
           

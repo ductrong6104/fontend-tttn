@@ -143,9 +143,23 @@ const SidebarAdmin = () => {
               <ListItemIcon className="ml-2">
                 <DashboardIcon />
               </ListItemIcon>
-              <ListItemText primary="Ghi chỉ số điện" />
+              <ListItemText primary="Phân công ghi điện" />
             </div>
           </Link>
+          {/* <Link href="/manager/recording-management">
+            <div
+              className="flex p-2 justify-center items-center"
+              style={
+                isActive("/manager/recording-management") ? activeStyle : {}
+              }
+              css={hoverStyle}
+            >
+              <ListItemIcon className="ml-2">
+                <DashboardIcon />
+              </ListItemIcon>
+              <ListItemText primary="Ghi chỉ số điện" />
+            </div>
+          </Link> */}
           <Link href="/manager/bill-management">
             <div
               className="flex p-2 justify-center items-center"

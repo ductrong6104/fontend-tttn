@@ -8,7 +8,7 @@
 
 import {  formatDateForDisplay } from '@/utils/formatDate';
   const Table = ({representName, data, headerNames, setData, sortConfig, setSortConfig, title, handleClickEdit}) => {
-    if (!data || data.length === 0) return <p>No data available</p>;
+    if (!data || data.length === 0) return <p>Hiện không có đơn nào</p>;
 
     // Lấy danh sách các khóa của đối tượng đầu tiên làm tiêu đề bảng
     const headers = Object.keys(data[0]);
@@ -138,21 +138,33 @@ import {  formatDateForDisplay } from '@/utils/formatDate';
                         : 
                           
                           (
-                            <ButtonCustom className='bg-stone-400 whitespace-nowrap' onClick={() => handleClickEdit(row.contractId, 1)}>
-                            Gia hạn hợp đồng
-                          </ButtonCustom>
+                          //   <ButtonCustom className='bg-stone-400 whitespace-nowrap' onClick={() => handleClickEdit(row.contractId, 1)}>
+                          //   Gia hạn hợp đồng
+                          // </ButtonCustom>
+                          null
                           )
                         )
                        
                         
                       }
                       {
-                        representName != 'contract' && (
+                        representName != 'contract' && representName != 'register' && (
                           <ButtonCustom className='bg-orange-200 whitespace-nowrap' onClick={() => handleClickEdit(row)}>
                             {getButtonText()}
                           </ButtonCustom>
                         )
                       }
+                      {representName === 'register' && (
+                        <div className='flex'>
+
+                                <ButtonCustom className='bg-green-400 whitespace-nowrap' onClick={() => handleClickEdit(row, 1)}>
+                                Xác nhận
+                            </ButtonCustom>
+                            <ButtonCustom className='bg-red-400 whitespace-nowrap' onClick={() => handleClickEdit(row, 0)}>
+                            Từ chối
+                        </ButtonCustom>
+                        </div>
+                      )}
                       
                     </div>
                 </td>

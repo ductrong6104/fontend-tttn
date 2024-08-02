@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from "react";
 import Table from "@/components/table/table";
-import { getAllRegistrationForm, updateProcessingEmployeeOfContract } from "@/modules/contracts/service";
+import { getAllRegistrationForm, rejectContract, updateProcessingEmployeeOfContract } from "@/modules/contracts/service";
 
 import SubfrmSelectPowerMeter from "@/components/subform/subfrmSelectPowerMeter";
 import AccountSession from "@/utils/account";
@@ -37,20 +37,36 @@ export default function PageManagedRegister (){
           }
         });
     },[reload])
-    const handleClickEdit = (row) => {
+    const handleClickEdit = (row, index) => {
+      // index = 0: từ chối, index = 1: xác nhận
       console.log(typeof row.id); // Hiển thị kiểu dữ liệu của row.id
 console.log(typeof accountSession.getEmployeeId()); 
-      updateProcessingEmployeeOfContract(row.id, accountSession.getEmployeeId()).then((res) => {
-        if (res.status === 200) {
-          notifySuccess("Xác nhận đăng ký hợp đồng thành công");
-          setReload(!reload);
-        }
-        else{
-          notifyError("Xác nhận đăng ký hợp đồng thất bại");
-          console.log(res.data);
-        }
-
-      })
+      if (index === 1) {
+        updateProcessingEmployeeOfContract(row.id, accountSession.getEmployeeId()).then((res) => {
+          if (res.status === 200) {
+            notifySuccess("Xác nhận đăng ký hợp đồng thành công");
+            setReload(!reload);
+          }
+          else{
+            notifyError("Xác nhận đăng ký hợp đồng thất bại");
+            console.log(res.data);
+          }
+  
+        })
+      }
+      else if (index === 0){
+        rejectContract(row.id, accountSession.getEmployeeId()).then((res) => {
+          if (res.status === 200) {
+            notifySuccess("Đã từ chối hợp đồng");
+            setReload(!reload);
+          }
+          else{
+            notifyError("Từ chối hợp đồng thất bại");
+            console.log(res.data);
+          }
+        })
+      }
+      
         // setRegistrationFormSelected({
         //   contractId: row.id,
         //   electricitySupplyAddress: row.electricitySupplyAddress
@@ -61,7 +77,7 @@ console.log(typeof accountSession.getEmployeeId());
 
         <div className="h-screen">
         <div className="flex justify-center text-blue-600">
-          <div className="text-2xl mb-2">Danh sách các đơn đăng ký sử dụng điện</div>
+          {/* <div className="text-2xl mb-2">Danh sách các đơn đăng ký sử dụng điện</div> */}
         </div>
         {/* <SubfrmSelectPowerMeter isOpen={subfrmSelectPowerMeterIsOpen} onClose={closeSubfrmSelectPowerMeter} registrationFormSelected={registrationFormSelected} reload={reload} setReload={setReload}/> */}
         <Table representName="register" headerNames={columnNames} data={registrationForm} setData={setRegistrationForm} sortConfig={sortConfig} setSortConfig={setSortConfig} title="Danh sách đơn đăng ký" handleClickEdit={handleClickEdit}></Table>

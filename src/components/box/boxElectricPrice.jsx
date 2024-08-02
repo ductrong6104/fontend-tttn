@@ -157,7 +157,6 @@ export default function BoxElectricPrice() {
           { id: "electricTypeName", label: "Tên loại điện" },
           { id: "firstLevel", label: "Mức đầu" },
           { id: "secondLevel", label: "Mức cuối" },
-          { id: "timeline", label: "Mốc thời gian" },
           { id: "price", label: "Đơn giá" },
         ]}
         onDelete={handleDelete}

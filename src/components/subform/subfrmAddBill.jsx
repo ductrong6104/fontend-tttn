@@ -7,14 +7,41 @@ import { createNewBill } from "@/modules/bills/service";
 import { notifyError, notifySuccess } from "../toastify/toastify";
 export function SubfrmAddBill({ isOpen, onClose, reload, setReload, frmData }) {
   const [formData, setFormData] = useState(frmData);
+
+  const getPaymentDueDate = (invoiceDateStr) => {
+    // Chuyển đổi invoiceDate thành đối tượng ngày
+    const invoiceDate = new Date(invoiceDateStr);
+  
+    // Tạo đối tượng ngày cho ngày 5 của tháng hiện tại
+    const currentYear = invoiceDate.getFullYear();
+    const currentMonth = invoiceDate.getMonth();
+    const fifthOfCurrentMonth = new Date(currentYear, currentMonth, 6);
+  
+  
+    let paymentDueDate;
+  
+   if (invoiceDate > fifthOfCurrentMonth) {
+      // Nếu invoiceDate lớn hơn ngày 5 của tháng hiện tại nhưng không vượt quá ngày 5 của tháng kế tiếp
+      paymentDueDate = new Date(fifthOfCurrentMonth);
+      paymentDueDate.setDate(fifthOfNextMonth.getDate() + 5); // Cộng thêm 5 ngày
+    } else {
+      // Nếu invoiceDate nhỏ hơn hoặc bằng ngày 5 của tháng hiện tại
+      paymentDueDate = new Date(fifthOfCurrentMonth);
+    }
+  
+    // Chuyển đổi đối tượng ngày thành chuỗi theo định dạng YYYY-MM-DD
+    return paymentDueDate.toISOString().split('T')[0];
+  };
   // cập nhật formDate khi frmData thay đổi từ form cha
   useEffect(() => {
+    console.log(`frmData`, frmData);
+    frmData.paymentDueDate = getPaymentDueDate(frmData.invoiceDate);
     setFormData(frmData);
 }, [frmData]); 
   const handleSubmit = (e) => {
     // Xu ly logic khi submit subform
     e.preventDefault();
-    console.log("Form submitted:", formData);
+    console.log("Form submitted:", JSON.stringify(formData));
     createNewBill(formData).then((res) => {
       if (res.status === 201) {
         notifySuccess("Xuất hóa đơn mới thanh cong");

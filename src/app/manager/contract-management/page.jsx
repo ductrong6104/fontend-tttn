@@ -3,7 +3,7 @@ import SubfrmContractExtension from "@/components/subform/subfrmContractExtensio
 import Table from "@/components/table/table"
 import { getAllContracts, terminateContract } from "@/modules/contracts/service";
 import { useEffect, useState } from "react";
-const columnNames = ["Mã hợp đồng", "Họ khách hàng", "Tên khách hàng", "Ngày bắt đầu hợp đồng","Ngày kết thúc hợp đồng","Mã đồng hồ - Địa chỉ cấp điện", "Loại điện","Mã - Họ tên nhân viên xử lý"]
+const columnNames = ["Mã hợp đồng", "Họ khách hàng", "Tên khách hàng", "Ngày bắt đầu hợp đồng","Ngày kết thúc hợp đồng","Mã đồng hồ - Địa chỉ cấp điện", "Loại điện","Mã - Họ tên nhân viên xử lý", "Trạng thái"]
 const textConfirmChangeStatus = [
     "Xác nhận chấm dứt hợp đồng này?",
     "Xác nhận gia hạn hợp đồng này?",
@@ -27,6 +27,7 @@ export default function PageManagedContract(){
         getAllContracts().then((res)=>{
             if(res.status === 200){
                 setContracts(res.data);
+                console.log(res.data);
             }
         })
     }, [reload])
@@ -34,7 +35,7 @@ export default function PageManagedContract(){
         
        
         if (window.confirm(`${textConfirmChangeStatus[action]}`)) {
-            // action = 1: gia hạn hợp đồng, action = 0: chấm dứt hợp đồng
+            // action = 0: chấm dứt hợp đồng
             if (action === 0){
                 console.log(`action`, contractId);
                 terminateContract(contractId).then((res)=>{

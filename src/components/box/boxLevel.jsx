@@ -43,12 +43,16 @@ export default function BoxLevel() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(JSON.stringify(formData));
+    // Chuyển đổi chuỗi thành double (số thực)
+    const firstLevelDouble = parseFloat(formData.firstLevel);
+    const secondLevelDouble = parseFloat(formData.secondLevel);
+
     if (
       formData.firstLevel === "" &&
       formData.secondLevel === ""
     ) {
       notifyError("Vui lòng nhập mức");
-    } else if (formData.firstLevel > formData.secondLevel && formData.firstLevel != '' && formData.secondLevel != '') {
+    } else if (firstLevelDouble > secondLevelDouble && formData.firstLevel != '' && formData.secondLevel != '') {
       notifyError("Mức đầu không lớn hơn mức cuối");
     } else {
       createLevel(formData).then((res) => {
@@ -65,9 +69,9 @@ export default function BoxLevel() {
     
   };
   const handleEdit = (id) => {};
-  const handleDelete = (id) => {
+  const handleDelete = (row) => {
     if (window.confirm(" có chắc muốn xóa bậc này không?")) {
-      deleteLevelById(id).then((res) => {
+      deleteLevelById(row.id).then((res) => {
         if (res.status === 204) {
           notifySuccess("Xóa bậc này thành công");
           setReload(!reload);

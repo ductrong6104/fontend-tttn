@@ -30,9 +30,9 @@ export default function BoxElectricType() {
     
   }
 
-  const handleDelete = (id) => {
+  const handleDelete = (row) => {
     if (window.confirm("Bạn có chắc muốn xóa loại điện này không?")) {
-        deleteElectricType(id).then((res) => {
+        deleteElectricType(row.id).then((res) => {
             if (res.status === 204){
                 notifySuccess("Xóa loại điện thành công")
                 setReload(!reload)
