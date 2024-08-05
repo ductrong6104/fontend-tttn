@@ -21,6 +21,7 @@ export default function FrmAddEmployee({ reload, setReload }) {
     username: "",
     password: "",
     passwordAgain: "",
+    roleId: "",
   });
 
   const [showPassword, setShowPassword] = useState(false);
@@ -36,15 +37,24 @@ export default function FrmAddEmployee({ reload, setReload }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(JSON.stringify(formData));
-    createEmployee(formData).then((res) => {
-      if (res.status === 201) {
-        notifySuccess("Thêm nhan viên thanh cong");
-        setReload(!reload);
-      } else {
-        notifyError("Thêm nhan viên that bai");
-        console.log(res.data);
+    setFormData((prevData) => {
+      const updatedData = {
+        ...prevData,
+        roleId: 2
       }
-    });
+      createEmployee(formData).then((res) => {
+        if (res.status === 201) {
+          notifySuccess("Thêm nhân viên thành công");
+          setReload(!reload);
+        } else {
+          notifyError("Thêm nhân viên thất bại");
+          console.log(res.data);
+        }
+      });
+      return updatedData;
+    })
+
+   
     // Add form submission logic here
   };
   const resetForm = () => {

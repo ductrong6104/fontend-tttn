@@ -1,12 +1,8 @@
 'use client'
 import FrmAddElectricRecording from "@/components/form/frmAddElectricRecording";
-import FrmAddPowerMeter from "@/components/form/frmAddPowerMeter";
-import Table from "@/components/table/table";
 import { getAllElectricRecordings } from "@/modules/electric-recordings/service";
-import { getAllPowerMeters } from "@/modules/power-meters/service";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 
-const columnNames = ["Mã ghi điện", "Mã đồng hồ", "Ngày ghi chỉ số", "Chỉ số cũ", "Chỉ số mới", "Mã nhân viên - họ tên"]
 import { formatDateForDisplay } from "@/utils/formatDate";
 import { SubfrmAddBill } from "@/components/subform/subfrmAddBill";
 import { getTotalAmountByElectricRecordingId } from "@/modules/bills/service";

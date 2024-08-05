@@ -1,7 +1,7 @@
 // components/TableComponent.js
 import React, { useState, useMemo } from "react";
 import { formatDateForDisplay } from "../../utils/formatDate";
-import LocalPrintshopIcon from '@mui/icons-material/LocalPrintshop';
+import LocalPrintshopIcon from "@mui/icons-material/LocalPrintshop";
 import {
   Table as MuiTable,
   TableBody,
@@ -68,7 +68,10 @@ const TableComponent = ({ data, columns, onEdit, onDelete, presentName }) => {
     return data.filter((row) =>
       columns.every(({ id }) =>
         row[id]
-          ? row[id].toString().toLowerCase().includes(searchTerms[id].toLowerCase())
+          ? row[id]
+              .toString()
+              .toLowerCase()
+              .includes(searchTerms[id].toString().toLowerCase())
           : true
       )
     );
@@ -91,99 +94,104 @@ const TableComponent = ({ data, columns, onEdit, onDelete, presentName }) => {
   const invoiceds = [
     { value: "true", label: "Đã thông báo" },
     { value: "false", label: "Chưa thông báo" },
-
-  ]
+  ];
   return (
     <>
-    <div className="flex flex-row">
-
-    {columns.map(({ id, label }) => (
-      (id === "powerMeterId" || id === "employeeIdAndFullName" ) ?
-      <div className="mr-2">
-        <Typography >Tìm theo {label}</Typography>
-        <TextField
-        variant="outlined"
-        size="small"
-        value={searchTerms[id]}
-        onChange={handleSearchChange(id)}
-        placeholder={`Nhập ${label}`}
-        style={{ marginLeft: 8 }}
-        sx={{marginTop:2}}
-        />
-      </div> : (id === "invoiced") && (
-        <div className="mr-2">
-        <Typography sx={{marginRight:2}}>Tìm theo {label}</Typography>
-        <FormControl sx={{width: 200}} margin="normal">
-        <InputLabel>Tìm theo trạng thái</InputLabel>
-        <Select
-          name={id}
-          value={searchTerms[id]}
-          onChange={handleSearchChange(id)}
-          label="Tìm theo trạng thái"
-          required
-        >
-         
-          {invoiceds.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
-              {option.label}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-        </div>
-      )
-    ))}
-    </div>
-    <Paper className="overflow-x-auto mt-2">
-      <TableContainer className="max-h-screen overflow-auto">
-        <MuiTable>
-          <TableHead> 
-            <TableRow >
-              {columns.map(({ id, label }) => (
-                <TableCell key={id} className="flex flex-col" >
-                  <TableSortLabel
-                    active={orderBy === id}
-                    direction={orderBy === id ? sortDirection : "asc"}
-                    onClick={() => handleRequestSort(id)}
+      <div className="flex flex-row">
+        {columns.map(({ id, label }) =>
+          id === "powerMeterId" || id === "employeeIdAndFullName" ? (
+            <div key={id} className="mr-2">
+              <Typography>Tìm theo {label}</Typography>
+              <TextField
+                variant="outlined"
+                size="small"
+                value={searchTerms[id]}
+                onChange={handleSearchChange(id)}
+                placeholder={`Nhập ${label}`}
+                style={{ marginLeft: 8 }}
+                sx={{ marginTop: 2 }}
+              />
+            </div>
+          ) : (
+            id === "invoiced" && (
+              <div className="mr-2">
+                <Typography sx={{ marginRight: 2 }}>
+                  Tìm theo {label}
+                </Typography>
+                <FormControl sx={{ width: 200 }} margin="normal">
+                  
+                  <Select
+                    name={id}
+                    value={searchTerms[id]}
+                    onChange={handleSearchChange(id)}
+                    // label="Tìm theo trạng thái"
+                    required
                   >
-                
+                    <MenuItem value="">Tất cả</MenuItem>
+                    {invoiceds.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </div>
+            )
+          )
+        )}
+      </div>
+      <Paper className="overflow-x-auto mt-2">
+        <TableContainer className="max-h-screen overflow-auto">
+          <MuiTable>
+            <TableHead>
+              <TableRow>
+                {columns.map(({ id, label }) => (
+                  <TableCell key={id} className="flex flex-col">
+                    <TableSortLabel
+                      active={orderBy === id}
+                      direction={orderBy === id ? sortDirection : "asc"}
+                      onClick={() => handleRequestSort(id)}
+                    >
                       {label}
-                  </TableSortLabel>
-                </TableCell>
-              ))}
-              <TableCell>Thực hiện
-              
-              </TableCell>
-              
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {paginatedData.map((row) => (
-              <TableRow key={row.id}>
-                {columns.map(({ id }) => (
-                  <TableCell
-                    style={{
-                      color:
-                        id === "paymentStatus" || id === "disabled" || id === "resignation" || id === "invoiced"
-                          ? row.paymentStatus === true || row.disabled === false || row.resignation === false || row.invoiced === true
-                            ? "green"
-                            : "red"
-                          : id === "gender"
-                          ? row.gender === true
-                            ? "pink"
-                            : "blue"
-                          : "inherit",
-                    }}
-                    key={id}
-                  >
-                    {id === "invoiceDate" ||
-                    id === "paymentDueDate" ||
-                    (id === "paymentDate" && row.paymentDate != null)
-                      ? formatDateForDisplay(row[id])
-                      : id === "paymentStatus"
-                      ? row.paymentStatus === true
-                        ? "Đã thanh toán"
-                        : "Chưa thanh toán"
+                    </TableSortLabel>
+                  </TableCell>
+                ))}
+                <TableCell>Thực hiện</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {paginatedData.map((row) => (
+                <TableRow key={row.id}>
+                  {columns.map(({ id }) => (
+                    <TableCell
+                      style={{
+                        color:
+                          id === "paymentStatus" ||
+                          id === "disabled" ||
+                          id === "resignation" ||
+                          id === "invoiced"
+                            ? row.paymentStatus === true ||
+                              row.disabled === false ||
+                              row.resignation === false ||
+                              row.invoiced === true
+                              ? "green"
+                              : "red"
+                            : id === "gender"
+                            ? row.gender === true
+                              ? "pink"
+                              : "blue"
+                            : "inherit",
+                      }}
+                      key={id}
+                    >
+                      {id === "invoiceDate" ||
+                      id === "paymentDueDate" ||
+                      (id === "paymentDate" && row.paymentDate != null)
+                        ? formatDateForDisplay(row[id])
+                        : id === "paymentStatus"
+                        ? row.paymentStatus === true
+                          ? "Đã thanh toán"
+                          : "Chưa thanh toán"
                         : id === "disabled"
                         ? row.disabled === true
                           ? "Vô hiệu hóa"
@@ -201,69 +209,76 @@ const TableComponent = ({ data, columns, onEdit, onDelete, presentName }) => {
                           ? "Đã xuất thông báo"
                           : "Chưa xuất thông báo"
                         : row[id]}
-                  </TableCell>
-                ))}
-                {presentName === "bill" ? (
-                  row.oldIndex != null ? (
-                    row.invoiced === false ? (
+                    </TableCell>
+                  ))}
+                  {presentName === "bill" ? (
+                    row.oldIndex != null ? (
+                      row.invoiced === false ? (
+                        <TableCell>
+                          <IconButton onClick={() => onEdit(row, 0)}>
+                            <EditIcon />
+                          </IconButton>
+                          <IconButton onClick={() => onDelete(row)}>
+                            <DeleteIcon />
+                          </IconButton>
+                          <IconButton onClick={() => onEdit(row, 1)}>
+                            <ExitToAppIcon />
+                            <Typography>Xuất thông báo</Typography>
+                          </IconButton>
+                        </TableCell>
+                      ) : (
+                        <TableCell></TableCell>
+                      )
+                    ) : row.paymentStatus === true ? (
                       <TableCell>
                         <IconButton onClick={() => onEdit(row)}>
-                          <ExitToAppIcon />
-                          <Typography>Xuất thông báo</Typography>
+                          <LocalPrintshopIcon />
+                          <Typography sx={{ color: "green" }}>
+                            In hóa đơn
+                          </Typography>
                         </IconButton>
                       </TableCell>
-                    ) : (
+                    ) : row.recordingDate !== null ? (
                       <TableCell>
-                       
+                        <IconButton onClick={() => onEdit(row)}>
+                          <LocalPrintshopIcon />
+                          <Typography sx={{ color: "red" }}>
+                            In thông báo
+                          </Typography>
+                        </IconButton>
                       </TableCell>
-                    )
-                  ) : row.paymentStatus === true ? (
-                    <TableCell>
-                      <IconButton onClick={() => onEdit(row)}>
-                        <LocalPrintshopIcon />
-                        <Typography sx={{color:"green"}}>In hóa đơn</Typography>
-                      </IconButton>
-                    </TableCell>
+                    ) : (<TableCell></TableCell>)
                   ) : (
-                    
                     <TableCell>
                       <IconButton onClick={() => onEdit(row)}>
-                        <LocalPrintshopIcon />
-                        <Typography sx={{color:"red"}}>In thông báo</Typography>
+                        <EditIcon />
+                      </IconButton>
+                      <IconButton
+                        onClick={
+                          row.levelId
+                            ? () => onDelete(row.electricTypeId, row.levelId)
+                            : () => onDelete(row)
+                        }
+                      >
+                        <DeleteIcon />
                       </IconButton>
                     </TableCell>
-                  )
-                ) : (
-                  <TableCell>
-                    <IconButton onClick={() => onEdit(row)}>
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton
-                      onClick={
-                        row.levelId
-                          ? () => onDelete(row.electricTypeId, row.levelId)
-                          : () => onDelete(row)
-                      }
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </TableCell>
-                )}
-              </TableRow>
-            ))}
-          </TableBody>
-        </MuiTable>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={filteredData.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      </TableContainer>
-    </Paper>
+                  )}
+                </TableRow>
+              ))}
+            </TableBody>
+          </MuiTable>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={filteredData.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </TableContainer>
+      </Paper>
     </>
   );
 };

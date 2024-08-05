@@ -37,3 +37,14 @@ export const getLevelNotUseByElectricTypeId = async (electricTypeId) => {
         throw error;
     }
 }
+
+export const updateLevel = async (levelId, level) => {
+    try{
+        const response = await api.put(`/levels/${levelId}`, level);
+        return response.data;
+    } catch (error) {
+        console.error('Call API Error:', error);
+        throw error;
+    }
+
+}

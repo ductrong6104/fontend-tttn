@@ -3,11 +3,19 @@ import TableComponent from "../table/tableComponent";
 import { useEffect, useState } from "react";
 import { createElectricType, deleteElectricType, getAllElectricTypes } from "@/modules/electric-types/service";
 import { notifyError, notifySuccess } from "../toastify/toastify";
+import SubfrmEditElectricType from "../subform/subfrmEditElectricType";
 export default function BoxElectricType() {
   const [formData, setFormData] = useState({});
   // Dữ liệu giả cho các bảng
   const [electricTypes, setElectricTypes] = useState([]);
   const [reload, setReload] = useState(false);
+  const [subfrmUpdateElectricTypeIsOpen, setSubfrmUpdateElectricTypeIsOpen] = useState(false);
+  const openSubfrmUpdateElectricType = () => {
+    setSubfrmUpdateElectricTypeIsOpen(true);
+  }
+  const closeSubfrmUpdateElectricType = () => {
+    setSubfrmUpdateElectricTypeIsOpen(false);
+  }
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -25,9 +33,10 @@ export default function BoxElectricType() {
     })
   }, [reload]);
 
-  const handleEdit = (id) => {
-   
-    
+  const handleEdit = (row) => {
+   console.log(`row`, row);
+    setFormData(row);
+    openSubfrmUpdateElectricType();
   }
 
   const handleDelete = (row) => {
@@ -38,7 +47,7 @@ export default function BoxElectricType() {
                 setReload(!reload)
             }
             else {
-                notifyError("Xóa loại điện thất bại")
+                notifyError("Lỗi điện đã được phân giá! Không thể xóa")
                 console.log(res.data)
             }
         })
@@ -80,6 +89,7 @@ export default function BoxElectricType() {
         </Button>
       </form>
       <h3>Danh sách Loại điện</h3>
+      <SubfrmEditElectricType frmData={formData} isOpen={subfrmUpdateElectricTypeIsOpen} onClose={closeSubfrmUpdateElectricType} reload={reload} setReload={setReload}/>
       <TableComponent
         data={electricTypes}
         columns={[

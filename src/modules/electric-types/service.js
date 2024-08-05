@@ -28,3 +28,12 @@ export const createElectricType = async (electricType) => {
         throw error;
     }
 }
+export const updateElectricType = async (electricTypeId, electricType) => {
+    try {
+        const response = await api.put(`/electric-types/${electricTypeId}`, electricType);
+        return response.data;
+    } catch (error) {
+        console.error('Call API Error:', error);
+        throw error;
+    }
+}

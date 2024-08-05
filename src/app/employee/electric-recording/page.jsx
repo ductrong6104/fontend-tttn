@@ -8,8 +8,11 @@ import { SubfrmAddBill } from "@/components/subform/subfrmAddBill";
 import { getTotalAmountByElectricRecordingId } from "@/modules/bills/service";
 import AccountSession from "@/utils/account";
 import TableComponent from "@/components/table/tableComponent";
-import { getAllElectricRecordings, getAssignedElectricRecordingsByEmployeeId } from "@/modules/electric-recordings/service";
+import { deleteElectricRecording, deleteRecordingByEmployee, getAllElectricRecordings, getAssignedElectricRecordingsByEmployeeId } from "@/modules/electric-recordings/service";
 import FrmRecordingByEmployee from "@/components/form/frmRecordingByEmployee";
+import SubfrmEditElectricRecording from "@/components/subform/subfrmEditElectricRecording";
+import { notifyError, notifySuccess } from "@/components/toastify/toastify";
+
 export default function PageElectricRecording(){
     const [sortConfig, setSortConfig] = useState({
         key: null,
@@ -18,12 +21,16 @@ export default function PageElectricRecording(){
     const [powerMeters, setPowerMeters] = useState([]);
     const [reload, setReload] = useState(false);
     const [subfrmAddBillIsOpen, setSubfrmAddBillIsOpen] = useState(false);
+    const [subfrmEditElectricRecordingIsOpen, setSubfrmEditElectricRecordingIsOpen] = useState(false);
     const [formData, setFormData] = useState({
         "invoiceDate": new Date().toISOString().split('T')[0],
         "paymentDueDate": "",
         "totalAmount":"",
         "electricRecordingId": ""
     });
+    const [formDataEdit, setFormDataEdit] = useState({
+        
+    })
     const accountSession = AccountSession.getInstance();
     const openSubfrmAddBill = () => {
         setSubfrmAddBillIsOpen(true);
@@ -31,6 +38,13 @@ export default function PageElectricRecording(){
     }
     const closeSubfrmAddBill = () => {
         setSubfrmAddBillIsOpen(false);
+    }
+
+    const openSubfrmEditRecording = () => {
+        setSubfrmEditElectricRecordingIsOpen(true);
+    }
+    const closeSubfrmEditRecording = () => {
+        setSubfrmEditElectricRecordingIsOpen(false);
     }
     useEffect(()=>{
         getAllElectricRecordings().then((res)=>{
@@ -41,28 +55,67 @@ export default function PageElectricRecording(){
     }, [reload])
    
     
-    const handleClickEdit = (row) => {
+    const handleClickEdit = (row, index) => {
         console.log(`row`, row.id);
-        getTotalAmountByElectricRecordingId({electricRecordingId: row.id}).then((res) => {
-            if (res.status === 200) {
-                const newFrmData = {
-                    totalAmount: res.data.totalAmount,
-                    electricRecordingId: row.id,
-                    invoiceDate: new Date().toISOString().split('T')[0],
-                    paymentDueDate: "",
-                    invoiceCreatorId: accountSession.getEmployeeId()
+        // index =0 : chỉnh sửa ghi điện, index = 1: xuất thông báo
+        if (index === 1){
+
+            getTotalAmountByElectricRecordingId({electricRecordingId: row.id}).then((res) => {
+                if (res.status === 200) {
+                    const newFrmData = {
+                        totalAmount: res.data.totalAmount,
+                        electricRecordingId: row.id,
+                        invoiceDate: new Date().toISOString().split('T')[0],
+                        paymentDueDate: "",
+                        invoiceCreatorId: accountSession.getEmployeeId()
+                    }
+                    console.log(`newFrmData`, newFrmData);
+                    setFormData(newFrmData);
+                    openSubfrmAddBill();
                 }
-                console.log(`newFrmData`, newFrmData);
-                setFormData(newFrmData);
-                openSubfrmAddBill();
-            }
-            else{
-                console.error("Failed to fetch total amount:", res.data);
-            }
-        });
+                else{
+                    console.error("Failed to fetch total amount:", res.data);
+                }
+            });
+        }
+        else if (index ===0){
+            console.log(`row`, row);
+            setFormDataEdit(row);
+            return;
+            openSubfrmEditRecording();
+        }
        
         
     }
+
+    const cutting = (str) => {
+        const parts = str.split('-');
+        console.log(`parts`, parts);
+        return parts[0];
+    }
+    const handleEditDelete = (row) => {
+        if (cutting(row.employeeIdAndFullName) === accountSession.getEmployeeId()){
+            notifyError("Không thể xóa ghi điện của nhân viên khác!")
+        }
+        else{
+        
+            // invoiced == true: đã xuất thông báo thì không thể xóa
+            if (window.confirm("Xác nhận xóa ghi điện?")){
+                deleteRecordingByEmployee(row.id).then((res) => {
+                    if (res.status === 204) {
+                        notifySuccess("Xóa ghi điện thành công");
+                        setReload(!reload);
+                    }
+                    else{
+                        notifyError("Xóa ghi điện thất bại");
+                    }
+                })
+            }
+        }
+            
+       
+    }
+    
     
     return(
 
@@ -74,6 +127,7 @@ export default function PageElectricRecording(){
                 <FrmRecordingByEmployee reload={reload} setReload={setReload}/>
             </div>
             <SubfrmAddBill isOpen={subfrmAddBillIsOpen} onClose={closeSubfrmAddBill} frmData={formData} reload={reload} setReload={setReload}></SubfrmAddBill>
+            <SubfrmEditElectricRecording isOpen={subfrmEditElectricRecordingIsOpen} onClose={closeSubfrmEditRecording} frmData={formDataEdit} reload={reload} setReload={setReload}/>
             {/* <Table representName="electric-recording" headerNames={columnNames} data={powerMeters} setData={setPowerMeters} sortConfig={sortConfig} setSortConfig={setSortConfig} title="Ghi chỉ số điện" handleClickEdit={handleClickEdit}/> */}
             <TableComponent data={powerMeters} columns={
                 [
@@ -87,6 +141,7 @@ export default function PageElectricRecording(){
                 ]
             }
             onEdit={handleClickEdit}
+            onDelete={handleEditDelete}
             presentName="bill"
             ></TableComponent>
         </div>

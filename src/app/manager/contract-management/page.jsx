@@ -1,6 +1,7 @@
 'use client'
 import SubfrmContractExtension from "@/components/subform/subfrmContractExtension";
 import Table from "@/components/table/table"
+import { notifyError, notifySuccess } from "@/components/toastify/toastify";
 import { getAllContracts, terminateContract } from "@/modules/contracts/service";
 import { useEffect, useState } from "react";
 const columnNames = ["Mã hợp đồng", "Họ khách hàng", "Tên khách hàng", "Ngày bắt đầu hợp đồng","Ngày kết thúc hợp đồng","Mã đồng hồ - Địa chỉ cấp điện", "Loại điện","Mã - Họ tên nhân viên xử lý", "Trạng thái"]
@@ -31,18 +32,21 @@ export default function PageManagedContract(){
             }
         })
     }, [reload])
-    const handleClickEdit = (contractId, action) => {
+    const handleClickEdit = (contract, action) => {
         
        
         if (window.confirm(`${textConfirmChangeStatus[action]}`)) {
             // action = 0: chấm dứt hợp đồng
             if (action === 0){
-                console.log(`action`, contractId);
-                terminateContract(contractId).then((res)=>{
-                    if(res.status === 200){
-                        setReload(!reload);
+                console.log(`action`, contract);
+                terminateContract(contract.id).then((res)=>{
+                    if (res.status === 200){
+                        notifySuccess("Chấm dứt hợp đồng thành công");
                     }
-                   
+                    else{
+                        notifyError("Phải ghi điện hôm nay cho hợp đồng này trước khi kết thúc")
+                        console.log(`res error`, res)
+                    }
                 })
             }
             else if (action === 1){

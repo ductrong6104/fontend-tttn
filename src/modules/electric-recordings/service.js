@@ -46,3 +46,43 @@ export const updateElectricRecordingFirst = async (electricRecordingUpdateReques
         throw error;
     }
 }
+
+export const updateElectricRecording = async (electricRecordingId, electricRecordingUpdateRequest) => {
+    try {
+        const response = await api.put(`/electric-recordings/${electricRecordingId}`,electricRecordingUpdateRequest);
+        return response.data;
+    } catch (error) {
+        console.error('Call API Error:', error);
+        throw error;
+    }
+}
+
+export const deleteElectricRecording = async (electricRecordingId) => {
+    try {
+        const response = await api.delete(`/electric-recordings/${electricRecordingId}`);
+        return response.data;
+    } catch (error) {
+        console.error('Call API Error:', error);
+        throw error;
+    }
+}
+
+export const updateElectricRecordingByEmployee = async (electricRecordingId, electricRecordingUpdateRequest) => {
+    try {
+        const response = await api.put(`/electric-recordings/${electricRecordingId}/employee`,electricRecordingUpdateRequest);
+        return response.data;
+    } catch (error) {
+        console.error('Call API Error:', error);
+        throw error;
+    }
+}
+
+export const deleteRecordingByEmployee = async (electricRecordingId) => {
+    try {
+        const response = await api.delete(`/electric-recordings/employee/${electricRecordingId}`);
+        return response.data;
+    } catch (error) {
+        console.error('Call API Error:', error);
+        throw error;
+    }
+}

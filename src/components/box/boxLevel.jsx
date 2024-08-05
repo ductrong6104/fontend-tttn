@@ -2,10 +2,7 @@ import {
   Box,
   TextField,
   Button,
-  InputLabel,
-  FormControl,
-  Select,
-  MenuItem,
+
 } from "@mui/material";
 import TableComponent from "../table/tableComponent";
 import { useEffect } from "react";
@@ -16,15 +13,21 @@ import {
   getAllLevels,
 } from "@/modules/levels/service";
 import { notifyError, notifySuccess } from "../toastify/toastify";
+import SubfrmEditLevel from "../subform/subfrmEditLevel";
 
 
 export default function BoxLevel() {
   const [formData, setFormData] = useState({
-    firstLevel: "",
-    secondLevel: "",
   }); 
   const [levels, setLevels]= useState([]);
   const [reload, setReload] = useState(false);
+  const [subfrmEditLevelIsOpen, setSubfrmEditLevelIsOpen] = useState(false);
+  const openSubfrmEditLevel = () => {
+    setSubfrmEditLevelIsOpen(true);
+  }
+  const closeSubfrmEditLevel = () => {
+    setSubfrmEditLevelIsOpen(false);
+  }
   useEffect(() => {
     getAllLevels().then((res) => {
       if (res.status === 200) {
@@ -68,7 +71,11 @@ export default function BoxLevel() {
       
     
   };
-  const handleEdit = (id) => {};
+  const handleEdit = (row) => {
+    setFormData(row);
+    console.log(`row`, row);
+    openSubfrmEditLevel();
+  };
   const handleDelete = (row) => {
     if (window.confirm(" có chắc muốn xóa bậc này không?")) {
       deleteLevelById(row.id).then((res) => {
@@ -76,7 +83,7 @@ export default function BoxLevel() {
           notifySuccess("Xóa bậc này thành công");
           setReload(!reload);
         } else {
-          notifyError("Xóa bậc này thất baị");
+          notifyError("Bậc này đã được phân giá! Không thể xóa");
           console.log(res.data);
         }
       });
@@ -113,6 +120,7 @@ export default function BoxLevel() {
           Thêm
         </Button>
       </form>
+      <SubfrmEditLevel frmData={formData} isOpen={subfrmEditLevelIsOpen} onClose={closeSubfrmEditLevel} reload={reload} setReload={setReload}/>
       <h3>Danh sách Bậc</h3>
       <TableComponent
         data={levels}

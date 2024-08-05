@@ -3,14 +3,10 @@
 import { useEffect, useState } from "react";
 import ButtonCustome from "../button/button";
 import InputCustome from "../input/input";
-import { createEmployee, getRecordableEmployees } from "@/modules/employees/service";
-import {
-  createNewPowerMeter,
-  getRecordablePowerMeters,
-} from "@/modules/power-meters/service";
+
 import { notifyError, notifySuccess } from "../toastify/toastify";
-import ComboBox from "../combobox/combobox";
-import { createElectricRecording, getAssignedElectricRecordingsByEmployeeId, updateElectricRecordingFirst } from "@/modules/electric-recordings/service";
+
+import {  getAssignedElectricRecordingsByEmployeeId, updateElectricRecordingFirst } from "@/modules/electric-recordings/service";
 import AccountSession from "@/utils/account";
 
 export default function FrmRecordingByEmployee({ reload, setReload }) {
@@ -25,7 +21,6 @@ export default function FrmRecordingByEmployee({ reload, setReload }) {
   
 
   const [powerMeterId, setPowerMeterId] = useState(null);
-
   const [oldIndex, setOldIndex] = useState(null);
   const [installationLocation, setInstallationLocation] = useState(null);
   const [reloadPowerMeterRecordable, setReloadPowerMeterRecordable] = useState(false);
@@ -47,7 +42,7 @@ export default function FrmRecordingByEmployee({ reload, setReload }) {
           
       }
     })
-  }, [reloadPowerMeterRecordable])
+  }, [accountSession, reloadPowerMeterRecordable]);
  
   
  

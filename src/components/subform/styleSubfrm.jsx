@@ -5,7 +5,7 @@ export const customStyles = {
       right: "auto",
       bottom: "auto",
       width: "450px",
-  
+      zIndex: 1000, // Thêm z-index để điều chỉnh thứ tự xếp chồn
       marginRight: "-50%",
       transform: "translate(-50%, -50%)",
       border: "1px solid #ccc", // Thêm border và định dạng border theo ý muốn

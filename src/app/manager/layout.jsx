@@ -16,7 +16,7 @@ export default function RootLayout({ children }) {
   const router = useRouter();
 
   if (!isLoggedIn) {
-    router.push('/sigin');
+    router.push('/signin');
     return;
   } 
   return (

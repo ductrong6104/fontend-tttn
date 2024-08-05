@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import Modal from "react-modal";
 import { customStyles } from "./styleSubfrm";
-import InputCustome from "../input/input";
 import ButtonCustome from "../button/button";
 import { getAvailablePowerMeters, updateStatusPowerMeter } from "@/modules/power-meters/service";
 import ComboBox from "../combobox/combobox";

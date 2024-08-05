@@ -2,22 +2,20 @@
   import { format } from 'date-fns';
 
   import { useState } from 'react';
-  import { useRouter } from 'next/navigation';
-  import { usePathname } from 'next/navigation';
+
   import ButtonCustom from '../button/button';
 
 import {  formatDateForDisplay } from '@/utils/formatDate';
   const Table = ({representName, data, headerNames, setData, sortConfig, setSortConfig, title, handleClickEdit}) => {
+    const [currentPage, setCurrentPage] = useState(1);
     if (!data || data.length === 0) return <p>Hiện không có đơn nào</p>;
 
     // Lấy danh sách các khóa của đối tượng đầu tiên làm tiêu đề bảng
     const headers = Object.keys(data[0]);
     console.log(`headers: ${headers}`)
-    const [currentPage, setCurrentPage] = useState(1);
 
     const rowsPerPage = 6;
-    const router = useRouter();
-    const pathname = usePathname()
+   
     // Tính toán số lượng trang
     const totalPages = Math.ceil(data.length / rowsPerPage);
 
@@ -131,7 +129,7 @@ import {  formatDateForDisplay } from '@/utils/formatDate';
                           row.endDate === null ?       
                        
                           (
-                            <ButtonCustom className='bg-red-400 whitespace-nowrap' onClick={() => handleClickEdit(row.contractId, 0)}>
+                            <ButtonCustom className='bg-red-400 whitespace-nowrap' onClick={() => handleClickEdit(row, 0)}>
                               Kết thúc hợp đồng
                           </ButtonCustom>
                           )

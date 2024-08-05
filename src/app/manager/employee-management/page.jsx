@@ -88,6 +88,8 @@ export default function PageManagedEmployee() {
         isOpen={modalIsOpen}
         onClose={closeModal}
         frmData={formData}
+        reload={reload}
+        setReload={setReload}
       />
      
       <TableComponent data={employees} columns={[

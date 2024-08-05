@@ -79,14 +79,14 @@ export default function FrmSigin() {
       router.push("/signup");
     }
     return (
-      <div className="flex justify-center items-center">
+      <div className="flex justify-center items-center h-screen">
      
         
   
         <form onSubmit={handleSubmit}  style={{width: '500px',
-        height: '100vh',
+        
     
-      }}>
+      }}  className="border-2 rounded-md p-4 bg-blue-100" >
           {/* Các trường dữ liệu nhập */}
           
           <div className="mb-4">
@@ -144,11 +144,14 @@ export default function FrmSigin() {
               Đăng nhập
             </ButtonCustome>
           </div>
-          <div className="flex justify-center items-center mb-2">
+          {isManager && (
+            <div className="flex justify-center items-center mb-2">
             <Divider width="10%"/>
             <div className="ml-2 mr-2">Chưa có tài khoản?</div>
             <Divider width="10%"/>
           </div>
+          )}
+          
           <div className="flex justify-end mb-4">
             {isManager && (<ButtonCustome className="bg-white border-blue-400 w-full" onClick={() => handleClickRegis()}>
               Đăng ký ngay
