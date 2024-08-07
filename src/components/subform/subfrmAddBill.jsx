@@ -23,7 +23,7 @@ export function SubfrmAddBill({ isOpen, onClose, reload, setReload, frmData }) {
    if (invoiceDate > fifthOfCurrentMonth) {
       // Nếu invoiceDate lớn hơn ngày 5 của tháng hiện tại nhưng không vượt quá ngày 5 của tháng kế tiếp
       paymentDueDate = new Date(fifthOfCurrentMonth);
-      paymentDueDate.setDate(fifthOfNextMonth.getDate() + 5); // Cộng thêm 5 ngày
+      paymentDueDate.setDate(fifthOfCurrentMonth.getDate() + 6); // Cộng thêm 5 ngày
     } else {
       // Nếu invoiceDate nhỏ hơn hoặc bằng ngày 5 của tháng hiện tại
       paymentDueDate = new Date(fifthOfCurrentMonth);
