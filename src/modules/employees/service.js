@@ -72,3 +72,12 @@ export const checkIdentityCardExists = async (identityCard) => {
       throw error;
     }
   }
+  export const getEmployeeById = async (employeeId) => {
+    try {
+      const response = await api.get(`/employees/${employeeId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error updating employee:', error);
+      throw error;
+    }
+  }

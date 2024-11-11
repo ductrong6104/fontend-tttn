@@ -86,3 +86,32 @@ export const deleteRecordingByEmployee = async (electricRecordingId) => {
         throw error;
     }
 }
+
+export const getShortestPath = async (employeeId, locationCurrent) => {
+    try {
+        const response = await api.post(`/electric-recordings/assigned/${employeeId}/shortest`, locationCurrent);
+        return response.data;
+    } catch (error) {
+        console.error('Call API Error:', error);
+        throw error;
+    }
+  };
+export const getRecordingHistoryByEmployee = async (employeeId) => {
+    try {
+        const response = await api.get(`/electric-recordings/recording-history/${employeeId}`);
+        return response.data;
+    } catch (error) {
+        console.error('Call API Error:', error);
+        throw error;
+    }
+  };
+
+  export const createAutomationAssignment = async (automationDatas) => {
+    try {
+        const response = await api.post(`/electric-recordings/automation-assignment`, automationDatas);
+        return response.data;
+    } catch (error) {
+        console.error('Call API Error:', error);
+        throw error;
+    }
+  }

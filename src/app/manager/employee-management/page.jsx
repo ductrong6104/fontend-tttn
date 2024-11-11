@@ -51,6 +51,8 @@ export default function PageManagedEmployee() {
     birthday: "",
     phone: "",
     email: "",
+    longtitude: "",
+    latitude: "",
   });
   const [reload, setReload] = useState(false);
   const openModal = () => {

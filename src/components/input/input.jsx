@@ -2,7 +2,7 @@
 import PropTypes from 'prop-types';
 import React, { forwardRef } from 'react';
 // InputCustome được bao bọc bằng forwardRef để có thể nhận ref từ parent component và gán nó cho thẻ <input>.
-const InputCustome = forwardRef(({ type, name, value, onChange, placeholder, className, required, readOnly = false }, ref) => {
+const InputCustome = forwardRef(({ type, name, value, onChange, placeholder, className, required, readOnly = false, defaultValue }, ref) => {
   return (
     <input
       type={type}
@@ -14,6 +14,7 @@ const InputCustome = forwardRef(({ type, name, value, onChange, placeholder, cla
       required={required}
       ref={ref}
       readOnly={readOnly}
+      defaultValue={defaultValue}
     />
   );
 });

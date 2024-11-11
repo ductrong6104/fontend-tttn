@@ -89,6 +89,20 @@ const SidebarEmployee = () => {
               <ListItemText primary="Quản lý hóa đơn" />
             </div>
           </Link>
+          <Link href="/employee/map-recording">
+            <div
+              className="flex p-2 justify-center items-center"
+              style={
+                isActive("/employee/map-recording") ? activeStyle : {}
+              }
+              css={hoverStyle}
+            >
+              <ListItemIcon className="ml-2">
+                <DashboardIcon />
+              </ListItemIcon>
+              <ListItemText primary="Bản đồ ghi điện" />
+            </div>
+          </Link>
           
           <Link href="/employee/setting">
             <div

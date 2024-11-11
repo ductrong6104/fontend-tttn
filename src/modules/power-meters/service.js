@@ -47,3 +47,33 @@ export const getRecordablePowerMeters = async () => {
         throw error;
     }
 }
+
+export const updateCoordinates = async (id, updateCoordinatesRequest) => {
+    try {
+        const response = await api.put(`/power-meters/${id}/coordinates`, updateCoordinatesRequest);
+        return response.data;
+    } catch (error) {
+        console.error('Call API Error:', error);
+        throw error;
+    }
+}
+
+export const getAutomationAssignment = async () => {
+    try {
+        const response = await api.get(`/power-meters/automation-assignment`);
+        return response.data;
+    } catch (error) {
+        console.error('Call API Error:', error);
+        throw error;
+    }
+}
+
+export const getInforPowerMeters = async (powerMeterIds) => {
+    try {
+        const response = await api.post(`/power-meters/infor-powerMeters`, powerMeterIds);
+        return response.data;
+    } catch (error) {
+        console.error('Call API Error:', error);
+        throw error;
+    }
+}

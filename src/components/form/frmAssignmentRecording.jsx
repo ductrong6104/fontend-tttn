@@ -3,7 +3,10 @@
 import { useEffect, useState } from "react";
 import ButtonCustome from "../button/button";
 import InputCustome from "../input/input";
-import { createEmployee, getRecordableEmployees } from "@/modules/employees/service";
+import {
+  createEmployee,
+  getRecordableEmployees,
+} from "@/modules/employees/service";
 import {
   createNewPowerMeter,
   getRecordablePowerMeters,
@@ -11,7 +14,7 @@ import {
 import { notifyError, notifySuccess } from "../toastify/toastify";
 import ComboBox from "../combobox/combobox";
 import { createElectricRecording } from "@/modules/electric-recordings/service";
-import { Typography } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import { formatDateForDisplay } from "@/utils/formatDate";
 
 export default function FrmAssignmentRecording({ reload, setReload }) {
@@ -19,14 +22,15 @@ export default function FrmAssignmentRecording({ reload, setReload }) {
     powerMeterId: "",
     employeeId: "",
   });
-  
+
   const [powerMetersRecordable, setPowerMetersRecordable] = useState([]);
   const [powerMeterId, setPowerMeterId] = useState(null);
   const [employees, setEmployees] = useState([]);
   const [employeeId, setEmployeeId] = useState(null);
-  
-  
-  const [reloadPowerMeterRecordable, setReloadPowerMeterRecordable] = useState(false);
+
+  // const [reloadPowerMeterRecordable, setReloadPowerMeterRecordable] =
+  //   useState();
+
   useEffect(() => {
     getRecordablePowerMeters().then((res) => {
       if (res.status === 200) {
@@ -34,12 +38,12 @@ export default function FrmAssignmentRecording({ reload, setReload }) {
           res.data.map((item) => ({
             label: item.installationLocation,
             value: item.id,
-            newIndex: item.newIndex
+            newIndex: item.newIndex,
           }))
         );
       }
     });
-  }, [reloadPowerMeterRecordable]);
+  }, [reload]);
   useEffect(() => {
     getRecordableEmployees().then((res) => {
       if (res.status === 200) {
@@ -47,7 +51,6 @@ export default function FrmAssignmentRecording({ reload, setReload }) {
           res.data.map((item) => ({
             label: item.idAndFullName,
             value: item.id,
-            
           }))
         );
       }
@@ -58,7 +61,7 @@ export default function FrmAssignmentRecording({ reload, setReload }) {
     // const selectedId = parseInt(value, 10);
     // const selected = powerMetersRecordable.find(pm => pm.value === selectedId);
     // setOldIndex(selected.newIndex);
-  }
+  };
   const handleChange = (e) => {
     const { name, value } = e.target;
     /**
@@ -77,17 +80,17 @@ export default function FrmAssignmentRecording({ reload, setReload }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     //   setFormData là một hàm bất đồng bộ và dữ liệu được ghi vào formData sẽ không cập nhật ngay lập tức. Vì vậy, khi bạn console.log(formData) ngay sau setFormData, bạn vẫn sẽ thấy dữ liệu cũ.
-    
+
     // Để khắc phục vấn đề này, bạn có thể sử dụng một hàm callback trong setFormData để đảm bảo rằng bạn ghi log dữ liệu sau khi nó đã được cập nhật
     const frmData = {
       powerMeterId: powerMeterId,
       employeeId: employeeId,
-    }
+    };
 
     createElectricRecording(frmData).then((res) => {
       if (res.status === 201) {
         notifySuccess("Phân công nhân viên thành công");
-        setReloadPowerMeterRecordable(!reloadPowerMeterRecordable);
+        // setReloadPowerMeterRecordable(!reloadPowerMeterRecordable);
         setReload(!reload);
       } else {
         notifyError("Phân công nhân viên thất bại");
@@ -98,13 +101,15 @@ export default function FrmAssignmentRecording({ reload, setReload }) {
   };
   const resetForm = () => {
     setFormData({
-        newIndex: "",
+      newIndex: "",
     });
   };
   return (
     <form onSubmit={handleSubmit} className="space-y-4 mb-4">
       <div className="flex justify-center">
-        <Typography variant="h4" className="text-blue-400">Phân công nhân viên ghi chỉ số điện {formatDateForDisplay(new Date())}</Typography>
+        <Typography variant="h4" className="text-blue-400">
+          Phân công nhân viên ghi chỉ số điện {formatDateForDisplay(new Date())}
+        </Typography>
       </div>
       <div className="flex flex-row justify-between">
         <div className="w-1/2 mr-4">

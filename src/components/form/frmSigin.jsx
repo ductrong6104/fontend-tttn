@@ -10,6 +10,8 @@ import { FaEyeSlash } from "react-icons/fa";
 import { sigin } from "@/modules/accounts/service";
 import { notifyError, notifySuccess } from "../toastify/toastify";
 
+const username_test = "nguyenvana";
+const password_test = "1";
 export default function FrmSigin() {
     const [formData, setFormData] = useState({
         "username": "",
@@ -27,6 +29,13 @@ export default function FrmSigin() {
     }
     const handleSubmit = (e) => {
       e.preventDefault();
+      setFormData((prevData) => {
+        return {
+          ...prevData,
+          "username": username_test,
+          "password": password_test
+        };
+      })
       // Xử lý logic khi submit subform
       console.log("Form submitted:", formData);
       if (isManager)
@@ -83,7 +92,7 @@ export default function FrmSigin() {
      
         
   
-        <form onSubmit={handleSubmit}  style={{width: '500px',
+        <form onSubmit={handleSubmit} method="POST" style={{width: '500px',
         
     
       }}  className="border-2 rounded-md p-4 bg-blue-100" >
@@ -99,10 +108,13 @@ export default function FrmSigin() {
             <InputCustome
               type="text"
               name="username"
+              // value={formData.username}
               value={formData.username}
               className="w-full"
               onChange={handleChange}
               required
+              defaultValue="nguyenvana"
+              placeholder="Tài khoản"
             ></InputCustome>
           </div>
           <div className="mb-2">
@@ -116,6 +128,7 @@ export default function FrmSigin() {
                   onChange={handleChange}
                   className="w-full"
                   placeholder={showPassword ? "Mật khẩu" : "********"}
+                  defaultValue="1"
                   required
               ></InputCustome>
               <FaEyeSlash className={`cursor-pointer absolute right-4 ${showPassword ? "invisible" : "visible"}`} onClick={() => setShowPassword(true)}></FaEyeSlash>

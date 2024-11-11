@@ -82,6 +82,7 @@ export default function PageManagedAssignment(){
                 ]
             }
             onEdit={handleClickEdit}></TableComponent>
+            
         </div>
     )
     
