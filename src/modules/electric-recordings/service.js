@@ -115,3 +115,13 @@ export const getRecordingHistoryByEmployee = async (employeeId) => {
         throw error;
     }
   }
+
+  export const createAutomationAssignmentOneEmployee = async (automationDatas) => {
+    try {
+        const response = await api.post(`/electric-recordings/automation-assignment-one-employee`, automationDatas);
+        return response.data;
+    } catch (error) {
+        console.error('Call API Error:', error);
+        throw error;
+    }
+  }

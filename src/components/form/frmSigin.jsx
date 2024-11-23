@@ -10,12 +10,11 @@ import { FaEyeSlash } from "react-icons/fa";
 import { sigin } from "@/modules/accounts/service";
 import { notifyError, notifySuccess } from "../toastify/toastify";
 
-const username_test = "nguyenvana";
-const password_test = "1";
+
 export default function FrmSigin() {
     const [formData, setFormData] = useState({
-        "username": "",
-        "password": "",
+        "username": "quanly",
+        "password": "1",
         "roleId": "1",
     })
   
@@ -29,13 +28,7 @@ export default function FrmSigin() {
     }
     const handleSubmit = (e) => {
       e.preventDefault();
-      setFormData((prevData) => {
-        return {
-          ...prevData,
-          "username": username_test,
-          "password": password_test
-        };
-      })
+      
       // Xử lý logic khi submit subform
       console.log("Form submitted:", formData);
       if (isManager)

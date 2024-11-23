@@ -10,43 +10,53 @@ import { useMap } from "react-leaflet";
 import { createAutomationAssignment } from "@/modules/electric-recordings/service";
 import { notifyError, notifySuccess } from "../toastify/toastify";
 
-export default function SubfrmAutomationAssignment({ isOpen, onClose, reload, setReload }) {
-  const [formData, setFormData] = useState({});
-  const [automationDatas, setAutomationDatas] = useState([]);
-
+export default function SubfrmAutomationAssignment({
+  isOpen,
+  onClose,
+  reload,
+  setReload,
+}) {
+  const { autoAssignData, setAutoAssignData } = useAutoAssignContext();
   useEffect(() => {
     getAutomationAssignment().then((res) => {
       if (res.status === 200) {
-        setAutomationDatas(res.data);
-        console.log(JSON.stringify(res.data));
+        console.log(`automation data: ${JSON.stringify(res.data)}`);
+        // Set autoAssignData based on automationDatas
+        const updatedData = res.data.map((data) => ({
+          ...data,
+          employeeId: data.employeeId,
+          powerMeters: data.powerMeters.map((meter) => ({
+            ...meter,
+            isChecked: true, // Add checked key with default value true
+          })),
+        }));
+        setAutoAssignData(updatedData);
       }
     });
-  }, []);
+  }, [reload]);
 
   const onSubmitAutomationAssign = () => {
-    const transformedData = automationDatas.map((automationData) => ({
-      employeeId: parseInt(automationData.employeeId.split("-")[0]),
-      powerMeterIds: automationData.powerMeterIds,
+    const transformedData = autoAssignData.map((data) => ({
+      employeeId: parseInt(data.employeeId.split("-")[0]),
+      powerMeterIds: data.powerMeters.map((meter) => meter.id),
     }));
+
     console.log(`submit automation: ${JSON.stringify(transformedData)}`);
     if (window.confirm("Xác nhận phân công tự động?")) {
-      createAutomationAssignment(transformedData).then((res)=>{
-        if (res.status === 201){
-          
-          notifySuccess("Phân công tự động thành công!")
+      createAutomationAssignment(transformedData).then((res) => {
+        if (res.status === 201) {
+          notifySuccess("Phân công tự động thành công!");
           setReload(!reload);
           onClose();
+        } else {
+          notifyError("Phân công tự động thất bại");
         }
-        else{
-          notifyError("Phân công tự động thất bại")
-        }
-      })
+      });
     }
-    
   };
   return (
     <Modal style={customStylesAutomation} isOpen={isOpen} onClose={onClose}>
-      {automationDatas.length > 0 ? (
+      {autoAssignData.length > 0 ? (
         <>
           <div className="flex justify-end">
             <Button type="button" onClick={onClose}>
@@ -61,13 +71,16 @@ export default function SubfrmAutomationAssignment({ isOpen, onClose, reload, se
             </div>
             <div className="w-2/5 ml-2">
               <FrmAutoAssignPowerMeter
-                automationDatas={automationDatas}
+                automationDatas={autoAssignData}
+                setAutomationDatas={setAutoAssignData}
+                reloadAssignData={reload}
+                setReloadAssignData={setReload}
               ></FrmAutoAssignPowerMeter>
             </div>
           </div>
           <div className="flex flex-row justify-end">
             <Button type="button" onClick={onSubmitAutomationAssign}>
-              Xác nhận phân công tự động
+              Phân công tất cả
             </Button>
           </div>
         </>

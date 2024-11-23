@@ -1,6 +1,6 @@
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { colors } from "../colors/colors";
-export default function ComboboxComponent({
+export default function ComboboxComponentAutomation({
   options,
   label,
   name,
@@ -19,9 +19,12 @@ export default function ComboboxComponent({
         onChange={onChange}
         required={required}
       >
-        <MenuItem value="">Vẫn giữ nguyên</MenuItem>
         {options.map((option, index) => (
-          <MenuItem key={option.value} value={option.value}>
+          <MenuItem
+            key={option.value}
+            value={option.value}
+            sx={{ background: colors[index % colors.length] }}
+          >
             {option.label}
           </MenuItem>
         ))}
