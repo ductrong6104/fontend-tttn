@@ -4,9 +4,11 @@ import { customStyles } from "./styleSubfrm";
 import {
   Button,
   FormControl,
+  Input,
   InputLabel,
   MenuItem,
   Select,
+  TextField,
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
@@ -15,6 +17,7 @@ import { getRecordableEmployees } from "@/modules/employees/service";
 import ComboboxComponent from "../combobox/comboboxComponent";
 import { updateElectricRecording } from "@/modules/electric-recordings/service";
 import { notifyError, notifySuccess } from "../toastify/toastify";
+import { updateAssignment } from "@/modules/assignments/service";
 export function SubfrmUpdateAssignmentRecording({
   isOpen,
   onClose,
@@ -72,7 +75,7 @@ export function SubfrmUpdateAssignmentRecording({
       formData.employeeId = frmData.employeeId;
     }
     console.log(`formData: ${JSON.stringify(formData)}`);
-    updateElectricRecording(formData.electricRecordingId, formData).then(
+    updateAssignment(formData.assignmentId, {"employeeId": formData.employeeId}).then(
       (res) => {
         if (res.status === 200) {
           notifySuccess("Cập nhật phân công thành công");
@@ -89,14 +92,30 @@ export function SubfrmUpdateAssignmentRecording({
   return (
     <Modal isOpen={isOpen} onRequestClose={onClose} style={customStyles}>
       <form onSubmit={handleSubmit}>
+        <button onClick={onClose} className="absolute top-4 right-4">X</button>
         <Typography variant="h6">Cập nhật phân công</Typography>
-        <ComboboxComponent
-          label={"Chọn đồng hồ"}
-          options={powerMetersRecordable}
-          onChange={handleChange}
-          name={"powerMeterId"}
+        <TextField
+          label="Mã đồng hồ"
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          name="powerMeterId"
           value={formData.powerMeterId}
-        ></ComboboxComponent>
+          onChange={handleChange}
+          type="number"
+          inputProps={{ readOnly: true }}
+        />
+        <TextField
+          label="Vị trí đồng hồ"
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          name="installationLocation"
+          value={formData.installationLocation}
+          onChange={handleChange}
+          type="text"
+          inputProps={{ readOnly: true }}
+        />
         <ComboboxComponent
           label={"Chọn nhân viên"}
           options={employees}

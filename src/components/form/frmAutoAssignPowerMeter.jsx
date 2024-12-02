@@ -42,19 +42,36 @@ export default function FrmAutoAssignPowerMeter({
     );
     if (selectedOption) {
       setSelectedLabel(selectedOption.label); // Update label when combobox option is selected
+      
     }
   };
-
+  useEffect(() => {
+    console.log("Initial powerMeters:", formData.powerMeters);
+    // chua fix doan nay  
+    // const updatedAutomationDatas = formData.powerMeters.map((powerMeter) => ({
+    //   employeeId: selectedLabel,
+    //   powerMeters: powerMeter,
+    // }));
+    // setAutomationDatas(updatedAutomationDatas);
+  }, [formData.powerMeters]);
   useEffect(() => {
     console.log(`selectedLabel change: ${selectedLabel}`);
   }, [selectedLabel]);
 
   useEffect(() => {
-    const updatedData = automationDatas.map((data) => ({
-      ...data,
-      label: data.employeeId,
-      value: data.powerMeters,
-    }));
+    const updatedData = [
+      // {
+      //   label: "Tất cả",
+      //   value: automationDatas.flatMap((data) => data.powerMeters), // Gộp tất cả powerMeters
+      // },
+      ...automationDatas.map((data) => ({
+        label: data.employeeId,
+        value: data.powerMeters,
+      })),
+    ];
+    console.log(
+      `automationdata change chekcbox: ${JSON.stringify(updatedData)}`
+    );
     setAutoAssignData(updatedData);
   }, [automationDatas]);
 
@@ -93,7 +110,7 @@ export default function FrmAutoAssignPowerMeter({
       return data;
     });
 
-    setAutomationDatas(updatedAutomationDatas); // Update automationDatas
+    // setAutomationDatas(updatedAutomationDatas); // Update automationDatas
   };
 
   const handleTransferClick = (powerMeter) => {
@@ -175,20 +192,7 @@ export default function FrmAutoAssignPowerMeter({
     }
   };
 
-  if (autoSuccessIcon) {
-    return (
-      <div>
-        <div className="flex justify-center items-center">
-          <Image
-            width={100}
-            height={100}
-            src="/accept-tick.svg"
-            alt="success"
-          ></Image>
-        </div>
-      </div>
-    );
-  }
+
   return (
     <div
       className="border-2 rounded-md p-4 overflow-auto"
@@ -276,8 +280,8 @@ export default function FrmAutoAssignPowerMeter({
                         <ComboboxComponentAutomation
                           label="Chọn nhân viên"
                           options={autoAssignData.map((data) => ({
-                            label: data.employeeId,
-                            value: data.employeeId,
+                            label: data.label,
+                            value: data.label,
                           }))}
                           onChange={(e) => handleTransferSelect(e.target.value)}
                           value={selectedLabel}

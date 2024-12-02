@@ -16,6 +16,7 @@ import ComboBox from "../combobox/combobox";
 import { createElectricRecording } from "@/modules/electric-recordings/service";
 import { Button, Typography } from "@mui/material";
 import { formatDateForDisplay } from "@/utils/formatDate";
+import { createAssignment } from "@/modules/assignments/service";
 
 export default function FrmAssignmentRecording({ reload, setReload }) {
   const [formData, setFormData] = useState({
@@ -87,7 +88,7 @@ export default function FrmAssignmentRecording({ reload, setReload }) {
       employeeId: employeeId,
     };
 
-    createElectricRecording(frmData).then((res) => {
+    createAssignment(frmData).then((res) => {
       if (res.status === 201) {
         notifySuccess("Phân công nhân viên thành công");
         // setReloadPowerMeterRecordable(!reloadPowerMeterRecordable);

@@ -20,7 +20,7 @@ export default function SubfrmAutomationAssignment({
   useEffect(() => {
     getAutomationAssignment().then((res) => {
       if (res.status === 200) {
-        console.log(`automation data: ${JSON.stringify(res.data)}`);
+        
         // Set autoAssignData based on automationDatas
         const updatedData = res.data.map((data) => ({
           ...data,
@@ -30,6 +30,7 @@ export default function SubfrmAutomationAssignment({
             isChecked: true, // Add checked key with default value true
           })),
         }));
+        console.log(`automation data: ${JSON.stringify(updatedData)}`);
         setAutoAssignData(updatedData);
       }
     });

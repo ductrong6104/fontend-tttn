@@ -20,7 +20,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import ComboboxComponent from "../combobox/comboboxComponent";
-
+import HistoryIcon from '@mui/icons-material/History';
 const TableComponent = ({ data, columns, onEdit, onDelete, presentName }) => {
   // Lấy danh sách các khóa của đối tượng đầu tiên làm tiêu đề bảng
   // Lấy tất cả các key từ data
@@ -313,7 +313,18 @@ const TableComponent = ({ data, columns, onEdit, onDelete, presentName }) => {
                         <Typography sx={{ color: "red" }}>Kết thúc hợp đồng</Typography>
                       </IconButton>
                     </TableCell>
-                  ) :  (
+                  ) :  presentName === "Phân công" ? (
+                    <TableCell>
+                      <IconButton onClick={() => onEdit(row)}>
+                      <EditIcon />
+                        <Typography sx={{ color: "green" }}>Thay đổi nhân viên</Typography>
+                      </IconButton>
+                      <IconButton onClick={() => onDelete(row)}>
+                      <HistoryIcon />
+                        <Typography sx={{ color: "blue" }}>Lịch sử ghi điện</Typography>
+                      </IconButton>
+                    </TableCell>
+                  ) : (
                     <TableCell>
                       <IconButton onClick={() => onEdit(row)}>
                         <EditIcon />

@@ -5,9 +5,11 @@ import FrmAutoAssignPowerMeter from "@/components/form/frmAutoAssignPowerMeter";
 import Map from "@/components/map/Map";
 import MapAutomation from "@/components/map/MapAutomation";
 import SubfrmAutomationAssignment from "@/components/subform/subfrmAutomationAssignment";
+import SubfrmHistoryRecording from "@/components/subform/subfrmHistoryRecording";
 import { SubfrmUpdateAssignmentRecording } from "@/components/subform/subfrmUpdateAssignmentRecording";
 import TableComponent from "@/components/table/tableComponent";
 import { notifyError, notifySuccess } from "@/components/toastify/toastify";
+import { getAssignments } from "@/modules/assignments/service";
 import {
   deleteElectricRecording,
   getAssignedElectricRecordings,
@@ -26,16 +28,27 @@ export default function PageManagedAssignment() {
     subfrmAutomationAssignmentIsOpen,
     setSubfrmAutomationAssignmentIsOpen,
   ] = useState(false);
-  const [automationDatas, setAutomationDatas] = useState([]);
+  const [subfrmHistoryRecordingIsOpen, setSubfrmHistoryRecordingIsOpen] =
+    useState(false);
+  const openSubfrmHistoryRecording = () => {
+    setSubfrmHistoryRecordingIsOpen(true);
+  };
+  const closeSubfrmHistoryRecording = () => {
+    setSubfrmHistoryRecordingIsOpen(false);
+  };
+  const [frmDataHistory, setFrmDataHistory] = useState({
+    powerMeterId: "",
+  });
+  // const [automationDatas, setAutomationDatas] = useState([]);
 
-  useEffect(() => {
-    getAutomationAssignment().then((res) => {
-      if (res.status === 200) {
-        setAutomationDatas(res.data);
-        console.log(JSON.stringify(res.data));
-      }
-    });
-  }, []);
+  // useEffect(() => {
+  //   getAutomationAssignment().then((res) => {
+  //     if (res.status === 200) {
+  //       setAutomationDatas(res.data);
+  //       console.log(JSON.stringify(res.data));
+  //     }
+  //   });
+  // }, []);
 
   const onOpenSubfrmAutomation = () => {
     setSubfrmAutomationAssignmentIsOpen(true);
@@ -50,7 +63,7 @@ export default function PageManagedAssignment() {
     setSubfrmUpdateAssignmentIsOpen(false);
   };
   useEffect(() => {
-    getAssignedElectricRecordings().then((res) => {
+    getAssignments().then((res) => {
       if (res.status === 200) {
         setAssignments(res.data);
       }
@@ -64,31 +77,32 @@ export default function PageManagedAssignment() {
   const handleClickEdit = (row) => {
     console.log(`row`, row);
     // Chia chuỗi bằng dấu gạch nối và lấy phần sau dấu gạch nối
-    if (row.recordingDate) notifyError("Đã ghi điện! Không thể cập nhật!");
-    else {
-      setAssignment({
-        electricRecordingId: row.id,
-        powerMeterId: row.powerMeterId,
-        employeeId: cutting(row.employeeNameAndId),
-      });
-      onOpenSubfrmUpdate();
-      console.log(`assignment`, assignment);
-    }
+
+    setAssignment({
+      assignmentId: row.id,
+      powerMeterId: row.powerMeterId,
+      installationLocation: row.installationLocation,
+      employeeId: cutting(row.employeeIdAndFullName),
+    });
+    onOpenSubfrmUpdate();
+    console.log(`assignment`, assignment);
   };
   const handleClickDelete = (row) => {
-    if (row.recordingDate) notifyError("Đã ghi điện! Không thể xóa!");
-    else {
-      if (window.confirm("Xác nhận xóa phân công này?")) {
-        deleteElectricRecording(row.id).then((res) => {
-          if (res.status === 204) {
-            notifySuccess("Xóa phân công thành công");
-            setReload(!reload);
-          } else {
-            notifyError("Xóa phân công thất bại");
-          }
-        });
-      }
-    }
+    // if (row.recordingDate) notifyError("Đã ghi điện! Không thể xóa!");
+    // else {
+    //   if (window.confirm("Xác nhận xóa phân công này?")) {
+    //     deleteElectricRecording(row.id).then((res) => {
+    //       if (res.status === 204) {
+    //         notifySuccess("Xóa phân công thành công");
+    //         setReload(!reload);
+    //       } else {
+    //         notifyError("Xóa phân công thất bại");
+    //       }
+    //     });
+    //   }
+    // }
+    setFrmDataHistory({ powerMeterId: row.powerMeterId });
+    openSubfrmHistoryRecording();
   };
   return (
     <div className="h-screen">
@@ -126,15 +140,24 @@ export default function PageManagedAssignment() {
       <TableComponent
         data={assignments}
         columns={[
-          { id: "id", label: "Mã ghi điện" },
+          { id: "id", label: "Mã phân công" },
           { id: "powerMeterId", label: "Mã đồng hồ điện" },
           { id: "installationLocation", label: "Vị trí đồng hồ" },
-          { id: "recordingDate", label: "Ngày ghi chỉ số điện" },
-          { id: "employeeNameAndId", label: "Mã - Họ tên nhân viên ghi" },
+          {
+            id: "employeeIdAndFullName",
+            label: "Mã - Họ tên nhân viên được phân",
+          },
+          // { id: "assignmentDate", label: "Ngày phân công" },
         ]}
         onEdit={handleClickEdit}
         onDelete={handleClickDelete}
+        presentName="Phân công"
       ></TableComponent>
+      <SubfrmHistoryRecording
+        onClose={closeSubfrmHistoryRecording}
+        isOpen={subfrmHistoryRecordingIsOpen}
+        frmData={frmDataHistory}
+      ></SubfrmHistoryRecording>
       <MapAutomation></MapAutomation>
     </div>
   );

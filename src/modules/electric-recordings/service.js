@@ -125,3 +125,14 @@ export const getRecordingHistoryByEmployee = async (employeeId) => {
         throw error;
     }
   }
+
+  export const getRecordingHistoryByPowerMeter = async (powerMeterId) => {
+    try {
+        const response = await api.get(`/electric-recordings/recording-history/powerMeter/${powerMeterId}`);
+        return response.data;
+    } catch (error) {
+        console.error('Call API Error:', error);
+        throw error;
+    }
+  }
+ 

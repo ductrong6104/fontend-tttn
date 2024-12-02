@@ -60,7 +60,34 @@ export default function MapAutomation() {
       }
       for (let i = 0; i < autoAssignData.length; i++) {
         const employee = autoAssignData[i];
+
         const color = colors[i % colors.length]; // Lặp lại màu nếu vượt quá danh sách
+
+        // Lấy thông tin vị trí của nhân viên
+        const employeeId = employee.employeeId.split("-")[0];
+        const employeeData = await getEmployeeById(employeeId);
+
+        if (employeeData?.data) {
+          
+
+          // Thêm marker cho nhân viên
+          allMarkers.push({
+            id: `employee-${employee.employeeId}`,
+            position: [employeeData.data.latitude, employeeData.data.longitude],
+            icon: employeeIcon,
+            popup: (
+              <>
+                <b>Nhân viên:</b> {employee.employeeId}
+                <br />
+                <b>Vị trí:</b> ({employeeData.data.address})
+              </>
+            ),
+          });
+        }
+        
+        if (employee.powerMeters.length === 0) {
+          continue;
+        }
 
         const newCoordinates = employee.powerMeters
           .filter(({ isChecked }) => isChecked) // Lọc những phần tử có checked = true
@@ -81,32 +108,12 @@ export default function MapAutomation() {
         }));
         allMarkers.push(...powerMeterMarkers);
 
-        // Lấy thông tin vị trí của nhân viên
-        const employeeId = employee.employeeId.split("-")[0];
-        const employeeData = await getEmployeeById(employeeId);
+        const employeeCoordinates = [
+          employeeData.data.longitude,
+          employeeData.data.latitude,
+        ];
 
-        if (employeeData?.data) {
-          const employeeCoordinates = [
-            employeeData.data.longitude,
-            employeeData.data.latitude,
-          ];
-
-          newCoordinates.push(employeeCoordinates);
-
-          // Thêm marker cho nhân viên
-          allMarkers.push({
-            id: `employee-${employee.employeeId}`,
-            position: [employeeData.data.latitude, employeeData.data.longitude],
-            icon: employeeIcon,
-            popup: (
-              <>
-                <b>Nhân viên:</b> {employee.employeeId}
-                <br />
-                <b>Vị trí:</b> ({employeeData.data.address})
-              </>
-            ),
-          });
-        }
+        newCoordinates.push(employeeCoordinates);
 
         // Lấy tuyến đường giữa các điểm
         try {
