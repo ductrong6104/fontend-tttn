@@ -38,7 +38,7 @@ const SearchBoxInMap = ({ onSelectPosition, className }) => {
 
   return (
     <div className={className}>
-      <div className="flex">
+      <div className="flex flex-col">
         <input
           type="text"
           value={query}
@@ -49,7 +49,7 @@ const SearchBoxInMap = ({ onSelectPosition, className }) => {
           placeholder="Tìm kiếm vị trí..."
           className="border border-gray-300 p-2 rounded mr-2"
         />
-        <button onClick={() => handleSearch(query)}>Tìm kiếm</button>
+        <button type="button" className="border-2 rounded-md m-2" onClick={() => handleSearch(query)}>Tìm kiếm</button>
       </div>
       {isSearching && <div>Đang tìm kiếm...</div>}
 

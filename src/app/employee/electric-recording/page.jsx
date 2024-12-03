@@ -124,6 +124,7 @@ export default function PageElectricRecording() {
             openSubfrmAddBill();
           } else {
             console.error("Failed to fetch total amount:", res.data);
+            notifyError("Chưa phân giá cho loại điện này")
           }
         }
       );

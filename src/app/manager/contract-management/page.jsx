@@ -50,14 +50,14 @@ export default function PageManagedContract(){
                         setReload(!reload);
                         if (res.data != null){
                             notifyError("Phải ghi điện trước khi kết thúc");
-                            createElectricRecording(res.data).then((res)=>{
-                                if (res.status === 201){
-                                    notifySuccess("Thêm phân công ghi điện thành công");
-                                }
-                                else{
-                                    notifyError("Vui lòng thông báo nhân viên ghi điện đã được phân công");
-                                }
-                            });
+                            // createElectricRecording(res.data).then((res)=>{
+                            //     if (res.status === 201){
+                            //         notifySuccess("Thêm phân công ghi điện thành công");
+                            //     }
+                            //     else{
+                            //         notifyError("Vui lòng thông báo nhân viên ghi điện đã được phân công");
+                            //     }
+                            // });
                         }
                         else {
                             notifySuccess("Kết thúc hợp đồng thành công");

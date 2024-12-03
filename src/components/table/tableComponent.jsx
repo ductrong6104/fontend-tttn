@@ -306,12 +306,16 @@ const TableComponent = ({ data, columns, onEdit, onDelete, presentName }) => {
                     ) : (
                       <TableCell></TableCell>
                     )
-                  ) : row.nameStatus === "Hoạt động" ? (
+                  ) : row.nameStatus === "Hoạt động" || row.nameStatus === "Chờ kết thúc" ? (
                     <TableCell>
                       <IconButton onClick={() => onEdit(row, 0)}>
                         <ExitToAppIcon />
                         <Typography sx={{ color: "red" }}>Kết thúc hợp đồng</Typography>
                       </IconButton>
+                    </TableCell>
+                  ) : row.nameStatus === "Kết thúc" ? (
+                    <TableCell>
+                    
                     </TableCell>
                   ) :  presentName === "Phân công" ? (
                     <TableCell>

@@ -79,9 +79,9 @@ export default function BoxElectricPrice() {
     const frm = { electricTypeId, levelId };
     console.log(JSON.stringify(frm));
     if (window.confirm(" có chắc muốn xóa giá không?")) {
-      deleteElectricityPrice(frm).then((res) => {
+      deleteElectricityPrice(electricTypeId, levelId).then((res) => {
         if (res.status === 204) {
-          notifySuccess("Xóa giá thanh cong");
+          notifySuccess("Xóa giá thành công");
           setReload(!reload);
         }
         else {

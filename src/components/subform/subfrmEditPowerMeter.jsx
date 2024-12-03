@@ -39,12 +39,15 @@ function SubfrmEditPowerMeter({ isOpen, onClose, frmData, reload, setReload }) {
     setIsLoading(true);
     try {
         const res = await getCoordinatesFromAddress(formData.installationLocation);
-        if (res)
+        if (res.length > 0)
           setFormData((prevData) => ({
             ...prevData,
             longitude: res[0].lon,
             latitude: res[0].lat,
           }));
+          else {
+            notifyError("Địa chỉ không hợp lệ! Không thể xuất tọa độ");
+          }
       } catch (error) {
         console.error("Failed to get coordinates", error);
       } finally {

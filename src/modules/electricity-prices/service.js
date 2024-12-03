@@ -19,10 +19,10 @@ export const createElectricityPrice = async (data) => {
     }
 }
 
-export const deleteElectricityPrice = async (data) => {
+export const deleteElectricityPrice = async (electricTypeId, levelId) => {
     try {
 
-        const response = await api.delete(`/electricity-prices`, data);
+        const response = await api.delete(`/electricity-prices/electric-types/${electricTypeId}/levels/${levelId}`);
         return response.data;
     } catch (error) {
         console.error('Call API Error:', error);
