@@ -132,7 +132,7 @@ export default function PageManagedAssignment() {
         setReload={setReload}
       ></SubfrmUpdateAssignmentRecording>
       <SubfrmAutomationAssignment
-        isOpen={subfrmAutomationAssignmentIsOpen}
+        isOpenModal={subfrmAutomationAssignmentIsOpen}
         onClose={onCloseSubfrmAutomation}
         reload={reload}
         setReload={setReload}
@@ -158,7 +158,7 @@ export default function PageManagedAssignment() {
         isOpen={subfrmHistoryRecordingIsOpen}
         frmData={frmDataHistory}
       ></SubfrmHistoryRecording>
-      <MapAutomation></MapAutomation>
+      {/* <MapAutomation></MapAutomation> */}
     </div>
   );
 }

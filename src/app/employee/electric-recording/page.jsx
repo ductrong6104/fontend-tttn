@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useMemo } from "react";
-import { formatDateForDisplay } from "@/utils/formatDate";
+import { formatDateForDisplay, formatMonth } from "@/utils/formatDate";
 import { SubfrmAddBill } from "@/components/subform/subfrmAddBill";
 import { getTotalAmountByElectricRecordingId } from "@/modules/bills/service";
 import AccountSession from "@/utils/account";
@@ -203,7 +203,7 @@ export default function PageElectricRecording() {
     <div className="">
       <div className="flex justify-center text-blue-600">
         <div className="text-2xl mb-2">
-          Thông tin ghi chỉ số điện {formatDateForDisplay(new Date())}
+          Thông tin ghi chỉ số điện {formatMonth(new Date())}
         </div>
       </div>
 

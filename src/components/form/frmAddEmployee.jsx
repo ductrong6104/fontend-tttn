@@ -150,23 +150,20 @@ export default function FrmAddEmployee({ reload, setReload }) {
     e.preventDefault();
     if (validateForm()) {
       console.log(JSON.stringify(formData));
-      setFormData((prevData) => {
-        const updatedData = {
-          ...prevData,
-          roleId: 2,
-          longitude: position.lon,
-          latitude: position.lat,
-        };
-        createEmployee(formData).then((res) => {
-          if (res.status === 201) {
-            notifySuccess("Thêm nhân viên thành công");
-            setReload(!reload);
-          } else {
-            notifyError("Thêm nhân viên thất bại");
-            console.log(res.data);
-          }
-        });
-        return updatedData;
+      const updatedData = {
+        ...prevData,
+        roleId: 2,
+        longitude: position.lon,
+        latitude: position.lat,
+      };
+      createEmployee(updatedData).then((res) => {
+        if (res.status === 201) {
+          notifySuccess("Thêm nhân viên thành công");
+          setReload(!reload);
+        } else {
+          notifyError("Thêm nhân viên thất bại");
+          console.log(res.data);
+        }
       });
     }
 
@@ -197,7 +194,7 @@ export default function FrmAddEmployee({ reload, setReload }) {
       alert("Tên không chứa ký tự số");
       return false;
     }
-    if (!passwordAgain === formData.password) {
+    if (!formData.passwordAgain === formData.password) {
       alert("Mật khẩu nhập lại không phù hợp! Vui lòng kiểm tra lại");
       return false;
     }

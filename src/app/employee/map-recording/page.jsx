@@ -6,6 +6,7 @@ import { getAssignedElectricRecordingsByEmployeeId } from "@/modules/electric-re
 import MovingVehicleMap from "@/components/map/VehicleMoving";
 import BoxElectricRecording from "@/components/box/boxElectricRecording";
 import { ReloadRecordingProvider, useReloadRecordingContext } from "@/components/context/reloadRecordingContext";
+
 export default function PageMapRecording() {
   const accountSession = AccountSession.getInstance();
   const [assignedPowerMeters, setAssignedPowerMeters] = useState([]);

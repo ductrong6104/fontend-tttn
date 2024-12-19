@@ -9,18 +9,25 @@ import { useAutoAssignContext } from "../context/autoAssignContext";
 import { useMap } from "react-leaflet";
 import { createAutomationAssignment } from "@/modules/electric-recordings/service";
 import { notifyError, notifySuccess } from "../toastify/toastify";
+import YesNoDialog from "../dialog/yesNoDialog";
+import { useDisclosure } from "@nextui-org/modal";
 
 export default function SubfrmAutomationAssignment({
-  isOpen,
+  isOpenModal,
   onClose,
   reload,
   setReload,
 }) {
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [dialogConfig, setDialogConfig] = useState({
+    title: "",
+    body: "",
+    onYes: () => {},
+  });
   const { autoAssignData, setAutoAssignData } = useAutoAssignContext();
   useEffect(() => {
     getAutomationAssignment().then((res) => {
       if (res.status === 200) {
-        
         // Set autoAssignData based on automationDatas
         const updatedData = res.data.map((data) => ({
           ...data,
@@ -35,7 +42,10 @@ export default function SubfrmAutomationAssignment({
       }
     });
   }, [reload]);
-
+  const handleOpenDialog = (config) => {
+    setDialogConfig(config); // Cập nhật cấu hình dialog
+    onOpen(); // Mở dialog
+  };
   const onSubmitAutomationAssign = () => {
     const transformedData = autoAssignData.map((data) => ({
       employeeId: parseInt(data.employeeId.split("-")[0]),
@@ -43,20 +53,23 @@ export default function SubfrmAutomationAssignment({
     }));
 
     console.log(`submit automation: ${JSON.stringify(transformedData)}`);
-    if (window.confirm("Xác nhận phân công tự động?")) {
-      createAutomationAssignment(transformedData).then((res) => {
-        if (res.status === 201) {
-          notifySuccess("Phân công tự động thành công!");
-          setReload(!reload);
-          onClose();
-        } else {
-          notifyError("Phân công tự động thất bại");
-        }
-      });
-    }
+
+    createAutomationAssignment(transformedData).then((res) => {
+      if (res.status === 201) {
+        notifySuccess("Phân công tự động thành công!");
+        setReload(!reload);
+        onClose();
+      } else {
+        notifyError("Phân công tự động thất bại");
+      }
+    });
   };
   return (
-    <Modal style={customStylesAutomation} isOpen={isOpen} onClose={onClose}>
+    <Modal
+      style={customStylesAutomation}
+      isOpen={isOpenModal}
+      onClose={onClose}
+    >
       {autoAssignData.length > 0 ? (
         <>
           <div className="flex justify-end">
@@ -80,7 +93,16 @@ export default function SubfrmAutomationAssignment({
             </div>
           </div>
           <div className="flex flex-row justify-end">
-            <Button type="button" onClick={onSubmitAutomationAssign}>
+            <Button
+              type="button"
+              onClick={() => {
+                handleOpenDialog({
+                  title: "Phân công tự động",
+                  body: `Phân công tất cả nhân viên?`,
+                  onYes: () => onSubmitAutomationAssign(),
+                });
+              }}
+            >
               Phân công tất cả
             </Button>
           </div>
@@ -88,6 +110,13 @@ export default function SubfrmAutomationAssignment({
       ) : (
         <div>Loading...</div>
       )}
+      <YesNoDialog
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        title={dialogConfig.title}
+        bodyText={dialogConfig.body}
+        onYes={dialogConfig.onYes}
+      />
     </Modal>
   );
 }

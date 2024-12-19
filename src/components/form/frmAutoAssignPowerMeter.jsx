@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
-import ComboboxComponent from "../combobox/comboboxComponent";
 import { Button } from "@mui/material";
 import { createAutomationAssignmentOneEmployee } from "@/modules/electric-recordings/service";
+import yesno from "yesno-dialog";
 import { notifyError, notifySuccess } from "../toastify/toastify";
-import { getAutomationAssignment } from "@/modules/power-meters/service";
 import ComboboxComponentAutomation from "../combobox/comboboxComponentAutomation";
-import { colors } from "../colors/colors";
-import { IconContext } from "react-icons";
 import Image from "next/image";
+import { useDisclosure } from "@nextui-org/modal";
+import YesNoDialog from "../dialog/yesnodialog";
 export default function FrmAutoAssignPowerMeter({
   automationDatas,
   setAutomationDatas,
@@ -17,12 +16,18 @@ export default function FrmAutoAssignPowerMeter({
   const [formData, setFormData] = useState({
     powerMeters: [], // Initialize powerMeters as an array
   });
-
   const [selectedLabel, setSelectedLabel] = useState(""); // Store the selected label
   const [autoAssignData, setAutoAssignData] = useState([]);
   const [selectedPowerMeter, setSelectedPowerMeter] = useState(null); // Track the selected power meter for transfer
   const [showTransferDropdown, setShowTransferDropdown] = useState(false); // Show or hide the dropdown
   const [autoSuccessIcon, setAutoSuccessIcon] = useState(false);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [dialogConfig, setDialogConfig] = useState({
+    title: "",
+    body: "",
+    onYes: () => {},
+  });
+
   /**
    * Handles the change event for input fields or comboboxes.
    * Updates the `formData` state with the new value based on the input's `name`.
@@ -42,12 +47,11 @@ export default function FrmAutoAssignPowerMeter({
     );
     if (selectedOption) {
       setSelectedLabel(selectedOption.label); // Update label when combobox option is selected
-      
     }
   };
   useEffect(() => {
     console.log("Initial powerMeters:", formData.powerMeters);
-    // chua fix doan nay  
+    // chua fix doan nay
     // const updatedAutomationDatas = formData.powerMeters.map((powerMeter) => ({
     //   employeeId: selectedLabel,
     //   powerMeters: powerMeter,
@@ -60,10 +64,10 @@ export default function FrmAutoAssignPowerMeter({
 
   useEffect(() => {
     const updatedData = [
-      // {
-      //   label: "Tất cả",
-      //   value: automationDatas.flatMap((data) => data.powerMeters), // Gộp tất cả powerMeters
-      // },
+      {
+        label: "Tất cả",
+        value: automationDatas.flatMap((data) => data.powerMeters), // Gộp tất cả powerMeters
+      },
       ...automationDatas.map((data) => ({
         label: data.employeeId,
         value: data.powerMeters,
@@ -163,8 +167,10 @@ export default function FrmAutoAssignPowerMeter({
     setShowTransferDropdown(false); // Hide the dropdown after transfer
     setSelectedPowerMeter(null); // Reset the selected power meter
   };
-  const assignOneEmployeeClick = () => {
+
+  const assignOneEmployeeClick = async () => {
     console.log(`${JSON.stringify(formData)}, ${selectedLabel}`);
+
     const transformedData = {
       employeeId: parseInt(selectedLabel.split("-")[0]),
       powerMeterIds: formData.powerMeters.map((meter) => meter.id),
@@ -173,25 +179,26 @@ export default function FrmAutoAssignPowerMeter({
     if (transformedData.powerMeterIds.length === 0) {
       notifyError(`Không có đồng hồ nào phân cho nhân viên ${selectedLabel}`);
     } else {
-      if (window.confirm(`Xác nhận phân công nhân viên ${selectedLabel}?`)) {
-        createAutomationAssignmentOneEmployee(transformedData).then((res) => {
-          if (res.status === 201) {
-            notifySuccess(
-              `Phân công tự động nhân viên ${selectedLabel} thành công！`
-            );
-            // dong bo bang danh sach phan cong ghi dien
-            setReloadAssignData(!reloadAssignData);
-            setAutoSuccessIcon(true);
-          } else {
-            notifyError(
-              `Phân công tự động nhân viên ${selectedLabel} thất bại！`
-            );
-          }
-        });
-      }
+      createAutomationAssignmentOneEmployee(transformedData).then((res) => {
+        if (res.status === 201) {
+          notifySuccess(
+            `Phân công tự động nhân viên ${selectedLabel} thành công！`
+          );
+          // dong bo bang danh sach phan cong ghi dien
+          setReloadAssignData(!reloadAssignData);
+          setAutoSuccessIcon(true);
+        } else {
+          notifyError(
+            `Phân công tự động nhân viên ${selectedLabel} thất bại！`
+          );
+        }
+      });
     }
   };
-
+  const handleOpenDialog = (config) => {
+    setDialogConfig(config); // Cập nhật cấu hình dialog
+    onOpen(); // Mở dialog
+  };
 
   return (
     <div
@@ -293,11 +300,26 @@ export default function FrmAutoAssignPowerMeter({
               ))}
           </div>
 
-          <Button onClick={() => assignOneEmployeeClick()}>
+          <Button
+            onClick={() =>
+              handleOpenDialog({
+                title: "Phân công tự động",
+                body: `Chỉ phân công cho nhân viên ${selectedLabel}?`,
+                onYes: () => assignOneEmployeeClick(),
+              })
+            }
+          >
             Phân công nhân viên này
           </Button>
         </div>
       )}
+      <YesNoDialog
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        title={dialogConfig.title}
+        bodyText={dialogConfig.body}
+        onYes={dialogConfig.onYes}
+      />
     </div>
   );
 }

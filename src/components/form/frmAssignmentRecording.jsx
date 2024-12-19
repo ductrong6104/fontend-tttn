@@ -109,7 +109,7 @@ export default function FrmAssignmentRecording({ reload, setReload }) {
     <form onSubmit={handleSubmit} className="space-y-4 mb-4">
       <div className="flex justify-center">
         <Typography variant="h4" className="text-blue-400">
-          Phân công nhân viên ghi chỉ số điện {formatDateForDisplay(new Date())}
+          Phân công nhân viên ghi chỉ số điện
         </Typography>
       </div>
       <div className="flex flex-row justify-between">

@@ -28,6 +28,7 @@ export default function TabRecordingHistory() {
           className={`${
             index < 5 ? "bg-orange-200" : ""
           } border-2 rounded-md p-4 mb-2`}
+          key={index}
         >
           <div>Mã đồng hồ: {recordHistory.powerMeterId}</div>
           <div className="">Ngày ghi: {recordHistory.recordingDate}</div>

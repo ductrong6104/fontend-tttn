@@ -1,0 +1,250 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.getInforPowerMeters = exports.getAutomationAssignment = exports.updateCoordinates = exports.getRecordablePowerMeters = exports.createNewPowerMeter = exports.getAllPowerMeters = exports.updateStatusPowerMeter = exports.getAvailablePowerMeters = void 0;
+
+var _api = _interopRequireDefault(require("@/utils/api"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+var getAvailablePowerMeters = function getAvailablePowerMeters() {
+  var response;
+  return regeneratorRuntime.async(function getAvailablePowerMeters$(_context) {
+    while (1) {
+      switch (_context.prev = _context.next) {
+        case 0:
+          _context.prev = 0;
+          _context.next = 3;
+          return regeneratorRuntime.awrap(_api["default"].get('/power-meters/available'));
+
+        case 3:
+          response = _context.sent;
+          return _context.abrupt("return", response.data);
+
+        case 7:
+          _context.prev = 7;
+          _context.t0 = _context["catch"](0);
+          console.error('Call API Error:', _context.t0);
+          throw _context.t0;
+
+        case 11:
+        case "end":
+          return _context.stop();
+      }
+    }
+  }, null, null, [[0, 7]]);
+};
+
+exports.getAvailablePowerMeters = getAvailablePowerMeters;
+
+var updateStatusPowerMeter = function updateStatusPowerMeter(powerMeterId, updateStatusRequest) {
+  var response;
+  return regeneratorRuntime.async(function updateStatusPowerMeter$(_context2) {
+    while (1) {
+      switch (_context2.prev = _context2.next) {
+        case 0:
+          _context2.prev = 0;
+          _context2.next = 3;
+          return regeneratorRuntime.awrap(_api["default"].put("/power-meters/".concat(powerMeterId, "/status"), updateStatusRequest));
+
+        case 3:
+          response = _context2.sent;
+          return _context2.abrupt("return", response.data);
+
+        case 7:
+          _context2.prev = 7;
+          _context2.t0 = _context2["catch"](0);
+          console.error('Call API Error:', _context2.t0);
+          throw _context2.t0;
+
+        case 11:
+        case "end":
+          return _context2.stop();
+      }
+    }
+  }, null, null, [[0, 7]]);
+};
+
+exports.updateStatusPowerMeter = updateStatusPowerMeter;
+
+var getAllPowerMeters = function getAllPowerMeters() {
+  var response;
+  return regeneratorRuntime.async(function getAllPowerMeters$(_context3) {
+    while (1) {
+      switch (_context3.prev = _context3.next) {
+        case 0:
+          _context3.prev = 0;
+          _context3.next = 3;
+          return regeneratorRuntime.awrap(_api["default"].get('/power-meters'));
+
+        case 3:
+          response = _context3.sent;
+          return _context3.abrupt("return", response.data);
+
+        case 7:
+          _context3.prev = 7;
+          _context3.t0 = _context3["catch"](0);
+          console.error('Call API Error:', _context3.t0);
+          throw _context3.t0;
+
+        case 11:
+        case "end":
+          return _context3.stop();
+      }
+    }
+  }, null, null, [[0, 7]]);
+};
+
+exports.getAllPowerMeters = getAllPowerMeters;
+
+var createNewPowerMeter = function createNewPowerMeter(newPowerMeterRequest) {
+  var response;
+  return regeneratorRuntime.async(function createNewPowerMeter$(_context4) {
+    while (1) {
+      switch (_context4.prev = _context4.next) {
+        case 0:
+          _context4.prev = 0;
+          _context4.next = 3;
+          return regeneratorRuntime.awrap(_api["default"].post('/power-meters', newPowerMeterRequest));
+
+        case 3:
+          response = _context4.sent;
+          return _context4.abrupt("return", response.data);
+
+        case 7:
+          _context4.prev = 7;
+          _context4.t0 = _context4["catch"](0);
+          console.error('Call API Error:', _context4.t0);
+          throw _context4.t0;
+
+        case 11:
+        case "end":
+          return _context4.stop();
+      }
+    }
+  }, null, null, [[0, 7]]);
+};
+
+exports.createNewPowerMeter = createNewPowerMeter;
+
+var getRecordablePowerMeters = function getRecordablePowerMeters() {
+  var response;
+  return regeneratorRuntime.async(function getRecordablePowerMeters$(_context5) {
+    while (1) {
+      switch (_context5.prev = _context5.next) {
+        case 0:
+          _context5.prev = 0;
+          _context5.next = 3;
+          return regeneratorRuntime.awrap(_api["default"].get('/power-meters/recordable'));
+
+        case 3:
+          response = _context5.sent;
+          return _context5.abrupt("return", response.data);
+
+        case 7:
+          _context5.prev = 7;
+          _context5.t0 = _context5["catch"](0);
+          console.error('Call API Error:', _context5.t0);
+          throw _context5.t0;
+
+        case 11:
+        case "end":
+          return _context5.stop();
+      }
+    }
+  }, null, null, [[0, 7]]);
+};
+
+exports.getRecordablePowerMeters = getRecordablePowerMeters;
+
+var updateCoordinates = function updateCoordinates(id, updateCoordinatesRequest) {
+  var response;
+  return regeneratorRuntime.async(function updateCoordinates$(_context6) {
+    while (1) {
+      switch (_context6.prev = _context6.next) {
+        case 0:
+          _context6.prev = 0;
+          _context6.next = 3;
+          return regeneratorRuntime.awrap(_api["default"].put("/power-meters/".concat(id, "/coordinates"), updateCoordinatesRequest));
+
+        case 3:
+          response = _context6.sent;
+          return _context6.abrupt("return", response.data);
+
+        case 7:
+          _context6.prev = 7;
+          _context6.t0 = _context6["catch"](0);
+          console.error('Call API Error:', _context6.t0);
+          throw _context6.t0;
+
+        case 11:
+        case "end":
+          return _context6.stop();
+      }
+    }
+  }, null, null, [[0, 7]]);
+};
+
+exports.updateCoordinates = updateCoordinates;
+
+var getAutomationAssignment = function getAutomationAssignment() {
+  var response;
+  return regeneratorRuntime.async(function getAutomationAssignment$(_context7) {
+    while (1) {
+      switch (_context7.prev = _context7.next) {
+        case 0:
+          _context7.prev = 0;
+          _context7.next = 3;
+          return regeneratorRuntime.awrap(_api["default"].get("/power-meters/automation-assignment"));
+
+        case 3:
+          response = _context7.sent;
+          return _context7.abrupt("return", response.data);
+
+        case 7:
+          _context7.prev = 7;
+          _context7.t0 = _context7["catch"](0);
+          console.error('Call API Error:', _context7.t0);
+          throw _context7.t0;
+
+        case 11:
+        case "end":
+          return _context7.stop();
+      }
+    }
+  }, null, null, [[0, 7]]);
+};
+
+exports.getAutomationAssignment = getAutomationAssignment;
+
+var getInforPowerMeters = function getInforPowerMeters(powerMeterIds) {
+  var response;
+  return regeneratorRuntime.async(function getInforPowerMeters$(_context8) {
+    while (1) {
+      switch (_context8.prev = _context8.next) {
+        case 0:
+          _context8.prev = 0;
+          _context8.next = 3;
+          return regeneratorRuntime.awrap(_api["default"].post("/power-meters/infor-powerMeters", powerMeterIds));
+
+        case 3:
+          response = _context8.sent;
+          return _context8.abrupt("return", response.data);
+
+        case 7:
+          _context8.prev = 7;
+          _context8.t0 = _context8["catch"](0);
+          console.error('Call API Error:', _context8.t0);
+          throw _context8.t0;
+
+        case 11:
+        case "end":
+          return _context8.stop();
+      }
+    }
+  }, null, null, [[0, 7]]);
+};
+
+exports.getInforPowerMeters = getInforPowerMeters;

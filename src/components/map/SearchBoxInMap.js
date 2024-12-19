@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+
 import { searchAddress } from "@/modules/maps/service";
 
 const SearchBoxInMap = ({ onSelectPosition, className }) => {

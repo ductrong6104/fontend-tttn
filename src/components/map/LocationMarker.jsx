@@ -33,54 +33,122 @@ function LocationMarker({
   };
 
   // Sử dụng useMapEvents để bắt sự kiện click
+  // const map = useMapEvents({
+  //   click(e) {
+  //     const { lat, lng } = e.latlng; // Lấy tọa độ từ lần click
+  //     setPosition([lat, lng]); // Cập nhật vị trí Marker
+
+  //     onChangeStartCoordinates({ lat: e.latlng.lat, lon: e.latlng.lng });
+  //     console.log("clickc corrdi");
+
+  //     // Lấy địa chỉ từ tọa độ
+  //     getAddressFromCoordinates(lat, lng).then((addr) => {
+  //       setAddress(addr);
+  //       onChangeStartAddress(addr);
+  //       map.flyTo(e.latlng, map.getZoom()); // Di chuyển đến vị trí click
+  //     });
+  //     const newLatLng = [e.latlng.lng, e.latlng.lat];
+
+  //     // Kiểm tra và xóa vị trí hiện tại nếu nó đã tồn tại trong coordinates
+  //     const existingIndex = coordinates.findIndex(
+  //       ([lng, lat]) => lng === newLatLng[0] && lat === newLatLng[1]
+  //     );
+
+  //     if (existingIndex !== -1) {
+  //       // Xóa vị trí cũ
+  //       coordinates.splice(existingIndex, 1);
+  //     }
+
+  //     // Thêm vị trí mới vào coordinates
+  //     coordinates[numberRecordAddress] = newLatLng;
+  //     // Call the API when coordinates change
+  //     getDirectionFromCoordinates(coordinates)
+  //       .then((data) => {
+  //         if (data) {
+  //           const decodedCoords = polyline.decode(data.routes[0].geometry);
+  //           const geojson = {
+  //             type: "Feature",
+  //             geometry: {
+  //               type: "LineString",
+  //               coordinates: decodedCoords.map(([lat, lng]) => [lng, lat]), // Đảo ngược thứ tự lat,lng thành lng,lat
+  //             },
+  //             properties: {},
+  //           };
+  //           console.log("geojson", geojson);
+  //           onChangeGeoJsonData(geojson); // Gọi callback cập nhật geoJsonData
+  //         }
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error fetching route:", error);
+  //       });
+  //   },
+  // });
   const map = useMapEvents({
     click(e) {
-      const { lat, lng } = e.latlng; // Lấy tọa độ từ lần click
-      setPosition([lat, lng]); // Cập nhật vị trí Marker
+      // Sử dụng Geolocation API để lấy tọa độ hiện tại
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
 
-      onChangeStartCoordinates({ lat: e.latlng.lat, lon: e.latlng.lng });
-      console.log("clickc corrdi");
+            // Cập nhật vị trí Marker
+            setPosition([latitude, longitude]);
+            onChangeStartCoordinates({ lat: latitude, lon: longitude });
 
-      // Lấy địa chỉ từ tọa độ
-      getAddressFromCoordinates(lat, lng).then((addr) => {
-        setAddress(addr);
-        onChangeStartAddress(addr);
-        map.flyTo(e.latlng, map.getZoom()); // Di chuyển đến vị trí click
-      });
-      const newLatLng = [e.latlng.lng, e.latlng.lat];
+            // Lấy địa chỉ từ tọa độ
+            getAddressFromCoordinates(latitude, longitude).then((addr) => {
+              setAddress(addr);
+              onChangeStartAddress(addr);
+              map.flyTo([latitude, longitude], map.getZoom()); // Di chuyển đến vị trí hiện tại
+            });
 
-      // Kiểm tra và xóa vị trí hiện tại nếu nó đã tồn tại trong coordinates
-      const existingIndex = coordinates.findIndex(
-        ([lng, lat]) => lng === newLatLng[0] && lat === newLatLng[1]
-      );
+            const newLatLng = [longitude, latitude];
 
-      if (existingIndex !== -1) {
-        // Xóa vị trí cũ
-        coordinates.splice(existingIndex, 1);
-      }
+            // Kiểm tra và xóa vị trí hiện tại nếu nó đã tồn tại trong coordinates
+            const existingIndex = coordinates.findIndex(
+              ([lng, lat]) => lng === newLatLng[0] && lat === newLatLng[1]
+            );
 
-      // Thêm vị trí mới vào coordinates
-      coordinates[numberRecordAddress] = newLatLng;
-      // Call the API when coordinates change
-      getDirectionFromCoordinates(coordinates)
-        .then((data) => {
-          if (data) {
-            const decodedCoords = polyline.decode(data.routes[0].geometry);
-            const geojson = {
-              type: "Feature",
-              geometry: {
-                type: "LineString",
-                coordinates: decodedCoords.map(([lat, lng]) => [lng, lat]), // Đảo ngược thứ tự lat,lng thành lng,lat
-              },
-              properties: {},
-            };
-            console.log("geojson", geojson);
-            onChangeGeoJsonData(geojson); // Gọi callback cập nhật geoJsonData
+            if (existingIndex !== -1) {
+              // Xóa vị trí cũ
+              coordinates.splice(existingIndex, 1);
+            }
+
+            // Thêm vị trí mới vào coordinates
+            coordinates[numberRecordAddress] = newLatLng;
+
+            // Call the API when coordinates change
+            getDirectionFromCoordinates(coordinates)
+              .then((data) => {
+                if (data) {
+                  const decodedCoords = polyline.decode(
+                    data.routes[0].geometry
+                  );
+                  const geojson = {
+                    type: "Feature",
+                    geometry: {
+                      type: "LineString",
+                      coordinates: decodedCoords.map(([lat, lng]) => [
+                        lng,
+                        lat,
+                      ]),
+                    },
+                    properties: {},
+                  };
+                  onChangeGeoJsonData(geojson);
+                }
+              })
+              .catch((error) => {
+                console.error("Error fetching route:", error);
+              });
+          },
+          (error) => {
+            console.error("Error getting current location:", error);
           }
-        })
-        .catch((error) => {
-          console.error("Error fetching route:", error);
-        });
+        );
+      } else {
+        console.error("Geolocation is not supported by this browser.");
+      }
     },
   });
 

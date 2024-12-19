@@ -1,15 +1,19 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import {
-  MapContainer,
-  TileLayer,
-  Marker,
-  Popup,
-  GeoJSON,
-  Circle,
-} from "react-leaflet";
+import dynamic from "next/dynamic";
+// Tải các thành phần của react-leaflet động, chỉ trên client
+const MapContainer = dynamic(() => import("react-leaflet").then(mod => mod.MapContainer), { ssr: false });
+const TileLayer = dynamic(() => import("react-leaflet").then(mod => mod.TileLayer), { ssr: false });
+const Marker = dynamic(() => import("react-leaflet").then(mod => mod.Marker), { ssr: false });
+const Popup = dynamic(() => import("react-leaflet").then(mod => mod.Popup), { ssr: false });
+const GeoJSON = dynamic(() => import("react-leaflet").then(mod => mod.GeoJSON), { ssr: false });
+
+// Import CSS của Leaflet
 import "leaflet/dist/leaflet.css";
+
+// Import Leaflet đối tượng L để xử lý các tuỳ chỉnh (nếu cần)
 import L from "leaflet";
+
 import polyline from "polyline";
 import { getDirectionFromCoordinates } from "@/modules/maps/service";
 import LocationCurrent from "./LocationCurrent";

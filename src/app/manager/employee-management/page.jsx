@@ -107,6 +107,7 @@ export default function PageManagedEmployee() {
         {id: 'resignation', label: 'Tình trạng'},
       ]}
       onEdit={handleClickEdit}></TableComponent>
+      
     </div>
   );
 }
