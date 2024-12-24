@@ -194,7 +194,7 @@ export default function FrmAddEmployee({ reload, setReload }) {
       alert("Tên không chứa ký tự số");
       return false;
     }
-    if (!formData.passwordAgain === formData.password) {
+    if (formData.passwordAgain != formData.password) {
       alert("Mật khẩu nhập lại không phù hợp! Vui lòng kiểm tra lại");
       return false;
     }

@@ -38,7 +38,9 @@ const SidebarEmployee = () => {
   };
   return (
     <div className="">
-      <ButtonCustome onClick={toggleMenu}>{isOpen ? "Đóng Menu" : "Mở Menu"}</ButtonCustome>
+      <ButtonCustome onClick={toggleMenu}>
+        {isOpen ? "Đóng Menu" : "Mở Menu"}
+      </ButtonCustome>
       <Drawer
         variant="permanent"
         open={isOpen}
@@ -75,12 +77,22 @@ const SidebarEmployee = () => {
               <ListItemText primary="Ghi chỉ số điện" />
             </div>
           </Link>
+          <Link href="/employee/electric-price">
+            <div
+              className="flex p-2 justify-center items-center"
+              style={isActive("/employee/electric-price") ? activeStyle : {}}
+              css={hoverStyle}
+            >
+              <ListItemIcon className="ml-2">
+                <DashboardIcon />
+              </ListItemIcon>
+              <ListItemText primary="Xem giá điện" />
+            </div>
+          </Link>
           <Link href="/employee/bill-management">
             <div
               className="flex p-2 justify-center items-center"
-              style={
-                isActive("/employee/bill-management") ? activeStyle : {}
-              }
+              style={isActive("/employee/bill-management") ? activeStyle : {}}
               css={hoverStyle}
             >
               <ListItemIcon className="ml-2">
@@ -92,9 +104,7 @@ const SidebarEmployee = () => {
           <Link href="/employee/map-recording">
             <div
               className="flex p-2 justify-center items-center"
-              style={
-                isActive("/employee/map-recording") ? activeStyle : {}
-              }
+              style={isActive("/employee/map-recording") ? activeStyle : {}}
               css={hoverStyle}
             >
               <ListItemIcon className="ml-2">
@@ -103,7 +113,7 @@ const SidebarEmployee = () => {
               <ListItemText primary="Bản đồ ghi điện" />
             </div>
           </Link>
-          
+
           <Link href="/employee/setting">
             <div
               className="flex p-2 justify-center items-center"
